@@ -58,3 +58,23 @@
   *ngIf="showGuard()" 
   (action)="onGuardAction($event)">
 </app-song-change-guard>
+
+<!-- Mobile Bottom Navigation -->
+<nav class="bottom-nav">
+  <button class="bottom-nav__item" [class.is-active]="!isLibraryOpen()" (click)="isLibraryOpen.set(false)">
+    <i class="fa-solid fa-house"></i>
+    <span>{{ 'HOME' | translate }}</span>
+  </button>
+  <button class="bottom-nav__item" [class.is-active]="isLibraryOpen() && activeLibraryTab() === 'youtube'" (click)="openLibrary('youtube')">
+    <i class="fa-solid fa-music"></i>
+    <span>{{ 'SONGS' | translate }}</span>
+  </button>
+  <button class="bottom-nav__item" [class.is-active]="isLibraryOpen() && activeLibraryTab() === 'local'" (click)="openLibrary('local')">
+    <i class="fa-solid fa-folder-open"></i>
+    <span>{{ 'LIBRARY' | translate }}</span>
+  </button>
+  <button class="bottom-nav__item" (click)="onExpandFavorites()">
+    <i class="fa-solid fa-headphones"></i>
+    <span>{{ 'LISTEN_MODE' | translate }}</span>
+  </button>
+</nav>

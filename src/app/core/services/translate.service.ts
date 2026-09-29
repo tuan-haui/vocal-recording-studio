@@ -14,6 +14,9 @@ export const TRANSLATIONS = {
     'LISTEN_MODE': 'Nghe nhạc',
     'BACK': 'Quay lại',
     'CHOOSE_SONG': 'Chọn bài',
+    'HOME': 'Trang chủ',
+    'SONGS': 'Bài hát',
+    'LIBRARY': 'Thư viện',
 
     // Youtube Search Modal
     'SEARCH_PLACEHOLDER': 'Tìm bài hát trên YouTube',
@@ -88,6 +91,9 @@ export const TRANSLATIONS = {
     'LISTEN_MODE': 'Listen Mode',
     'BACK': 'Back',
     'CHOOSE_SONG': 'Choose Song',
+    'HOME': 'Home',
+    'SONGS': 'Songs',
+    'LIBRARY': 'Library',
 
     // Youtube Search Modal
     'SEARCH_PLACEHOLDER': 'Search for a song on YouTube',
