@@ -17,7 +17,7 @@ export class YoutubeService {
       .set('part', 'snippet')
       .set('type', 'video')
       .set('maxResults', '12')
-      .set('q', query + ' karaoke')
+      .set('q', query)
       .set('key', environment.youtubeApiKey);
 
     if (pageToken) {
