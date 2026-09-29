@@ -13,6 +13,7 @@ import { AudioRecorderService } from '../../core/services/audio-recorder.service
 import { TranslateService } from '../../core/services/translate.service';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { LanguageSelectComponent } from '../../shared/components/language-select/language-select.component';
+import { ThemeToggleComponent } from '../../shared/components/theme-toggle/theme-toggle.component';
 
 @Component({
   selector: 'app-studio',
@@ -25,7 +26,8 @@ import { LanguageSelectComponent } from '../../shared/components/language-select
     CurrentTakeComponent,
     SongChangeGuardComponent,
     TranslatePipe,
-    LanguageSelectComponent
+    LanguageSelectComponent,
+    ThemeToggleComponent
   ],
   templateUrl: './studio.component.html',
   styleUrls: ['./studio.component.scss']

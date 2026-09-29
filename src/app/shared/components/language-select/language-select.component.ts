@@ -9,19 +9,19 @@ import { TranslateService } from '../../../core/services/translate.service';
   template: `
     <div class="lang-select" [class.is-open]="isOpen()" (click)="toggleOpen()">
       <div class="lang-select__current">
-        <span class="flag-icon" *ngIf="translateService.currentLang() === 'vi'">🇻🇳</span>
-        <span class="flag-icon" *ngIf="translateService.currentLang() === 'en'">🇬🇧</span>
+        <img class="flag-icon" *ngIf="translateService.currentLang() === 'vi'" src="/vn.png" alt="VN">
+        <img class="flag-icon" *ngIf="translateService.currentLang() === 'en'" src="/GB.png" alt="EN">
         <span class="lang-code">{{ translateService.currentLang() | uppercase }}</span>
         <i class="fa-solid fa-chevron-down caret"></i>
       </div>
       
       <div class="lang-select__dropdown" *ngIf="isOpen()">
         <button class="lang-option" [class.active]="translateService.currentLang() === 'vi'" (click)="selectLang('vi', $event)">
-          <span class="flag-icon">🇻🇳</span> Tiếng Việt
+          <img class="flag-icon" src="/vn.png" alt="VN"> Tiếng Việt
           <i class="fa-solid fa-check check-icon" *ngIf="translateService.currentLang() === 'vi'"></i>
         </button>
         <button class="lang-option" [class.active]="translateService.currentLang() === 'en'" (click)="selectLang('en', $event)">
-          <span class="flag-icon">🇬🇧</span> English
+          <img class="flag-icon" src="/GB.png" alt="EN"> English
           <i class="fa-solid fa-check check-icon" *ngIf="translateService.currentLang() === 'en'"></i>
         </button>
       </div>
@@ -57,6 +57,15 @@ import { TranslateService } from '../../../core/services/translate.service';
     .lang-select:hover .lang-select__current {
       background: rgba(255, 255, 255, 0.15);
       border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .flag-icon {
+      width: 20px;
+      height: 14px;
+      object-fit: cover;
+      border-radius: 2px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      display: inline-block;
     }
 
     .caret {
