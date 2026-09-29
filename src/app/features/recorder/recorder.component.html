@@ -4,7 +4,7 @@
       <i class="fa-solid fa-microphone-lines" style="color: #ff3d8b; margin-right: 6px;"></i>
       Thu âm
     </h2>
-    <div class="meter" [style.--level]="(analyserService.inputLevel() * 100) + '%'">
+    <div class="meter" [style.--level]="(analyserService.inputLevel() * 100) + '%'" [title]="'INPUT_LEVEL' | translate">
       <span class="meter__fill"></span>
     </div>
   </div>
@@ -13,7 +13,7 @@
   <div class="countdown-stage" *ngIf="sessionService.countdownActive()">
     <div class="countdown-stage__badge">
       <i class="fa-solid fa-music fa-bounce"></i>
-      <span>Chuẩn bị vào bài hát</span>
+      <span>{{ 'GET_READY' | translate }}</span>
     </div>
     
     <div class="countdown-stage__circle-wrap">
@@ -30,8 +30,6 @@
         </ng-container>
       </div>
     </div>
-    
-    <p class="countdown-stage__hint">Beat đang phát, hãy chuẩn bị giọng hát nhé!</p>
   </div>
 
   <!-- Standard Controls (when not counting down) -->
@@ -43,11 +41,11 @@
             [disabled]="recorderService.hasPermission() && !recorderService.isRecording() && !sessionService.canRecord()">
       <ng-container *ngIf="!recorderService.hasPermission()">
         <i class="fa-solid fa-microphone"></i>
-        <span class="rec-btn__label">Cấp quyền Mic</span>
+        <span class="rec-btn__label">{{ 'MIC_ENABLE' | translate }}</span>
       </ng-container>
       <ng-container *ngIf="recorderService.hasPermission()">
         <i class="fa-solid" [class.fa-stop]="recorderService.isRecording()" [class.fa-circle]="!recorderService.isRecording()"></i>
-        <span class="rec-btn__label">{{ recorderService.isRecording() ? 'Dừng thu' : 'Thu âm' }}</span>
+        <span class="rec-btn__label">{{ recorderService.isRecording() ? ('STOP_BTN' | translate) : ('RECORD_BTN' | translate) }}</span>
       </ng-container>
     </button>
   </div>

@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Song } from '../../core/models';
 import { YoutubePlayerService, FavoritesService } from '../../core/services';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-karaoke-player',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslatePipe],
   templateUrl: './karaoke-player.component.html',
   styleUrls: ['./karaoke-player.component.scss']
 })

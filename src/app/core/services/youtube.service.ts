@@ -12,12 +12,13 @@ export class YoutubeService {
   private http = inject(HttpClient);
   private apiUrl = 'https://www.googleapis.com/youtube/v3/search';
 
-  search(query: string, pageToken?: string): Observable<YouTubeSearchResult> {
+  search(query: string, isKaraokeMode: boolean = false, pageToken?: string): Observable<YouTubeSearchResult> {
+    const finalQuery = isKaraokeMode ? `${query} karaoke` : query;
     let params = new HttpParams()
       .set('part', 'snippet')
       .set('type', 'video')
       .set('maxResults', '12')
-      .set('q', query)
+      .set('q', finalQuery)
       .set('key', environment.youtubeApiKey);
 
     if (pageToken) {

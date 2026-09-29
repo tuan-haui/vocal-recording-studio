@@ -7,13 +7,13 @@
             class="library-tab" 
             [class.is-active]="activeTab() === 'youtube'" 
             (click)="activeTab.set('youtube')">
-      <i class="fa-brands fa-youtube"></i> YouTube
+      <i class="fa-brands fa-youtube"></i> {{ 'YOUTUBE_TAB' | translate }}
     </button>
     <button type="button" 
             class="library-tab" 
             [class.is-active]="activeTab() === 'local'" 
             (click)="activeTab.set('local')">
-      <i class="fa-solid fa-folder-open"></i> Beat máy
+      <i class="fa-solid fa-folder-open"></i> {{ 'LOCAL_TAB' | translate }}
     </button>
     <button type="button" 
             class="library-tab" 
@@ -26,22 +26,29 @@
 
   <!-- TAB 1: YOUTUBE SEARCH -->
   <ng-container *ngIf="activeTab() === 'youtube'">
-    <form class="search" role="search" (submit)="$event.preventDefault(); onSearch()">
+    <form class="search" role="search" (submit)="$event.preventDefault(); onSearch()" style="position: relative;">
       <input 
         class="search__input" 
         type="search" 
-        placeholder="Tìm bài hát trên YouTube"
+        [placeholder]="'SEARCH_PLACEHOLDER' | translate"
         [ngModel]="searchQuery()" 
         (ngModelChange)="onSearchChange($event)"
         name="search"
+        style="padding-right: 110px;"
       >
+      <div class="karaoke-toggle" style="position: absolute; right: 6px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.4); padding: 4px 8px; border-radius: 999px; cursor: pointer;" (click)="toggleKaraokeMode()" [title]="'KARAOKE_TOGGLE_TITLE' | translate">
+        <span style="font-size: 0.75rem; font-weight: 600; transition: color 0.2s;" [style.color]="isKaraokeMode() ? '#ffb547' : '#a99bc4'">{{ 'KARAOKE_TOGGLE' | translate }}</span>
+        <div class="toggle-switch" style="width: 28px; height: 16px; border-radius: 999px; background: rgba(255,255,255,0.2); position: relative; transition: all 0.2s;" [style.background]="isKaraokeMode() ? 'rgba(255, 181, 71, 0.3)' : 'rgba(255,255,255,0.2)'">
+          <div class="toggle-thumb" style="width: 12px; height: 12px; border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: all 0.2s;" [style.transform]="isKaraokeMode() ? 'translateX(12px)' : 'translateX(0)'" [style.backgroundColor]="isKaraokeMode() ? '#ffb547' : '#fff'"></div>
+        </div>
+      </div>
     </form>
     
     <div *ngIf="isLoading()" style="text-align: center; padding: 12px; color: #a99bc4;">
-      <i class="fa-solid fa-spinner fa-spin"></i> Đang tìm kiếm...
+      <i class="fa-solid fa-spinner fa-spin"></i> {{ 'SEARCHING' | translate }}
     </div>
     <div *ngIf="error()" style="text-align: center; padding: 12px; color: #ff3d8b;">
-      <i class="fa-solid fa-triangle-exclamation"></i> {{ error() }}
+      <i class="fa-solid fa-triangle-exclamation"></i> {{ 'SEARCH_ERROR' | translate }}
     </div>
     
     <ul class="songs" *ngIf="!isLoading()">
@@ -55,7 +62,7 @@
           <span class="song__fav-toggle" 
                 [class.is-fav]="favoritesService.isFavorite(result.videoId)"
                 (click)="$event.stopPropagation(); favoritesService.toggleFavorite(result)"
-                [title]="favoritesService.isFavorite(result.videoId) ? 'Bỏ thích' : 'Thêm vào yêu thích'">
+                [title]="favoritesService.isFavorite(result.videoId) ? ('UNFAVORITE' | translate) : ('FAVORITE' | translate)">
             <i class="fa-solid fa-heart"></i>
           </span>
         </button>
@@ -69,15 +76,15 @@
     
     <div class="upload-dropzone" (click)="fileInput.click()">
       <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
-      <p class="upload-title">Tải beat từ máy tính</p>
-      <span class="upload-sub">Hỗ trợ file MP3, WAV, AAC, M4A, MP4</span>
+      <p class="upload-title">{{ 'UPLOAD_LOCAL_TITLE' | translate }}</p>
+      <span class="upload-sub">{{ 'UPLOAD_LOCAL_SUB' | translate }}</span>
       <button type="button" class="upload-btn">
-        <i class="fa-solid fa-plus"></i> Chọn file
+        <i class="fa-solid fa-plus"></i> {{ 'CHOOSE_FILE' | translate }}
       </button>
     </div>
 
     <div class="local-header" *ngIf="localTracks().length > 0" style="padding: 10px 4px 4px; font-size: 0.8rem; color: #a99bc4; font-weight: 600;">
-      <i class="fa-solid fa-list-check" style="margin-right: 4px;"></i> Danh sách beat đã tải ({{ localTracks().length }})
+      <i class="fa-solid fa-list-check" style="margin-right: 4px;"></i> {{ 'UPLOADED_LIST' | translate }} ({{ localTracks().length }})
     </div>
 
     <ul class="songs" *ngIf="localTracks().length > 0">
@@ -88,12 +95,12 @@
           </span>
           <span class="song__meta">
             <span class="song__title">{{ track.title }}</span>
-            <span class="song__channel">{{ track.channelTitle }}</span>
+            <span class="song__channel">{{ track.mediaType === 'video' ? ('LOCAL_VIDEO' | translate) : ('LOCAL_AUDIO' | translate) }}</span>
           </span>
           <span class="song__fav-toggle" 
                 [class.is-fav]="favoritesService.isFavorite(track.videoId)"
                 (click)="$event.stopPropagation(); favoritesService.toggleFavorite(track)"
-                [title]="favoritesService.isFavorite(track.videoId) ? 'Bỏ thích' : 'Thêm vào yêu thích'">
+                [title]="favoritesService.isFavorite(track.videoId) ? ('UNFAVORITE' | translate) : ('FAVORITE' | translate)">
             <i class="fa-solid fa-heart"></i>
           </span>
         </button>
@@ -102,17 +109,17 @@
 
     <div class="empty" *ngIf="localTracks().length === 0" style="padding: 24px 12px; margin-top: 10px;">
       <i class="fa-solid fa-folder-open" style="font-size: 1.8rem; color: #a99bc4; margin-bottom: 8px; opacity: 0.5;"></i>
-      <p class="empty__title">Chưa có beat nào</p>
-      <p class="empty__hint">Nhấn vào ô trên để tải beat nhạc từ thiết bị của bạn.</p>
+      <p class="empty__title">{{ 'EMPTY_LOCAL_TITLE' | translate }}</p>
+      <p class="empty__hint">{{ 'EMPTY_LOCAL_HINT' | translate }}</p>
     </div>
   </ng-container>
 
   <!-- TAB 3: FAVORITES PLAYLIST (CHẾ ĐỘ NGHE NHẠC) -->
   <ng-container *ngIf="activeTab() === 'favorites'">
     <div class="local-header" *ngIf="favoritesService.favorites().length > 0" style="display: flex; align-items: center; justify-content: space-between; padding: 6px 4px 10px; font-size: 0.85rem; color: #a99bc4; font-weight: 600;">
-      <span><i class="fa-solid fa-headphones" style="color: #ff3d8b; margin-right: 4px;"></i> Playlist yêu thích ({{ favoritesService.favorites().length }})</span>
+      <span><i class="fa-solid fa-headphones" style="color: #ff3d8b; margin-right: 4px;"></i> {{ 'FAVORITES_PLAYLIST' | translate }} ({{ favoritesService.favorites().length }})</span>
       <button class="expand-btn" (click)="expandFavorites.emit()" style="background: rgba(255, 61, 139, 0.15); border: 1px solid rgba(255, 61, 139, 0.3); color: #ff3d8b; padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; cursor: pointer; transition: all 0.2s;">
-        <i class="fa-solid fa-expand"></i> Mở rộng
+        <i class="fa-solid fa-expand"></i> {{ 'EXPAND' | translate }}
       </button>
     </div>
 
@@ -129,7 +136,7 @@
           </span>
           <span class="song__fav-toggle is-fav" 
                 (click)="$event.stopPropagation(); favoritesService.removeFavorite(song.videoId)"
-                title="Xóa khỏi yêu thích">
+                [title]="'REMOVE_FAVORITE' | translate">
             <i class="fa-solid fa-xmark"></i>
           </span>
         </button>
@@ -138,8 +145,8 @@
 
     <div class="empty" *ngIf="favoritesService.favorites().length === 0" style="padding: 28px 14px; margin-top: 10px;">
       <i class="fa-solid fa-heart" style="font-size: 2rem; color: #ff3d8b; margin-bottom: 8px; opacity: 0.5;"></i>
-      <p class="empty__title">Danh sách yêu thích trống</p>
-      <p class="empty__hint">Nhấn biểu tượng trái tim (❤️) trên bất kỳ bài hát nào để lưu vào đây nghe bất cứ lúc nào!</p>
+      <p class="empty__title">{{ 'EMPTY_FAV_TITLE' | translate }}</p>
+      <p class="empty__hint">{{ 'EMPTY_FAV_HINT' | translate }}</p>
     </div>
   </ng-container>
 </aside>

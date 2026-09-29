@@ -10,6 +10,9 @@ import { Song } from '../../core/models';
 import { RecordingSessionService } from '../../core/services/recording-session.service';
 import { AudioRecorderService } from '../../core/services/audio-recorder.service';
 
+import { TranslateService } from '../../core/services/translate.service';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
+
 @Component({
   selector: 'app-studio',
   standalone: true,
@@ -19,7 +22,8 @@ import { AudioRecorderService } from '../../core/services/audio-recorder.service
     KaraokePlayerComponent, 
     RecorderComponent, 
     CurrentTakeComponent,
-    SongChangeGuardComponent
+    SongChangeGuardComponent,
+    TranslatePipe
   ],
   templateUrl: './studio.component.html',
   styleUrls: ['./studio.component.scss']
@@ -32,6 +36,7 @@ export class StudioComponent {
   
   sessionService = inject(RecordingSessionService);
   recorderService = inject(AudioRecorderService);
+  translateService = inject(TranslateService);
   router = inject(Router);
   
   private pendingSong: Song | null = null;

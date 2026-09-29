@@ -23,7 +23,7 @@
         </div>
         <div class="vinyl-details">
           <h4>{{ currentSong.title }}</h4>
-          <span class="vinyl-tag"><i class="fa-solid fa-file-audio"></i> Beat nhạc từ thiết bị</span>
+          <span class="vinyl-tag"><i class="fa-solid fa-file-audio"></i> {{ 'LOCAL_BEAT_TAG' | translate }}</span>
         </div>
       </div>
     </div>
@@ -31,20 +31,20 @@
     <!-- Placeholder khi chưa chọn bài -->
     <div class="player-empty" *ngIf="!currentSong">
       <i class="fa-solid fa-headphones-simple"></i>
-      <p>Chọn bài hát từ YouTube hoặc tải beat từ máy tính để bắt đầu</p>
+      <p>{{ 'EMPTY_PLAYER_MSG' | translate }}</p>
     </div>
   </div>
 
   <div class="player__bar">
     <div style="display: inline-flex; align-items: center; gap: 8px;">
-      <button class="icon-btn icon-btn--step" type="button" (click)="playPrevious()" title="Bài trước" [disabled]="!currentSong">
+      <button class="icon-btn icon-btn--step" type="button" (click)="playPrevious()" [title]="'PREV_SONG' | translate" [disabled]="!currentSong">
         <i class="fa-solid fa-backward-step"></i>
       </button>
-      <button class="icon-btn icon-btn--play" type="button" (click)="togglePlay()" [attr.aria-label]="playerService.isPlaying() ? 'Tạm dừng' : 'Phát'">
+      <button class="icon-btn icon-btn--play" type="button" (click)="togglePlay()" [attr.aria-label]="playerService.isPlaying() ? ('PAUSE' | translate) : ('PLAY' | translate)">
         <i class="fa-solid fa-pause" *ngIf="playerService.isPlaying()"></i>
         <i class="fa-solid fa-play" *ngIf="!playerService.isPlaying()" style="margin-left: 2px;"></i>
       </button>
-      <button class="icon-btn icon-btn--step" type="button" (click)="playNext()" title="Bài tiếp theo" [disabled]="!currentSong">
+      <button class="icon-btn icon-btn--step" type="button" (click)="playNext()" [title]="'NEXT_SONG' | translate" [disabled]="!currentSong">
         <i class="fa-solid fa-forward-step"></i>
       </button>
     </div>
@@ -63,7 +63,7 @@
               [class.is-fav]="isFavorite()" 
               (click)="toggleFavorite()" 
               [disabled]="!currentSong" 
-              [title]="isFavorite() ? 'Đã yêu thích (Bấm để bỏ)' : 'Thêm vào danh sách yêu thích'">
+              [title]="isFavorite() ? ('UNFAVORITE' | translate) : ('FAVORITE' | translate)">
         <i class="fa-solid fa-heart"></i>
       </button>
 
@@ -71,7 +71,7 @@
       <button class="icon-btn icon-btn--autoplay" type="button" 
               [class.is-active]="autoplay()" 
               (click)="toggleAutoplay()" 
-              [title]="autoplay() ? 'Tự chuyển bài tiếp theo: BẬT' : 'Tự chuyển bài tiếp theo: TẮT'">
+              [title]="autoplay() ? ('AUTOPLAY_ON' | translate) : ('AUTOPLAY_OFF' | translate)">
         <i class="fa-solid fa-repeat"></i>
       </button>
 
@@ -81,7 +81,7 @@
          [class.fa-volume-xmark]="playerService.volume() === 0" 
          (click)="toggleMute()" 
          style="cursor: pointer; opacity: 0.8; font-size: 0.9rem;"
-         title="Bật/Tắt âm lượng"></i>
+         [title]="'MUTE_TOGGLE' | translate"></i>
       <input class="range range--volume" type="range" 
         [min]="0" 
         [max]="100" 
@@ -93,6 +93,6 @@
   <p class="player__now" *ngIf="currentSong">
     <i *ngIf="currentSong.source !== 'local'" class="fa-brands fa-youtube" style="margin-right: 8px; color: #ff3d8b; font-size: 1.05rem;"></i>
     <i *ngIf="currentSong.source === 'local'" class="fa-solid fa-file-audio" style="margin-right: 8px; color: #3ee6c4; font-size: 1.05rem;"></i>
-    <span>Đang phát:</span> {{ currentSong.title }}
+    <span>{{ 'NOW_PLAYING' | translate }}</span> {{ currentSong.title }}
   </p>
 </section>

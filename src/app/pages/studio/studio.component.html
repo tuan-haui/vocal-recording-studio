@@ -1,7 +1,7 @@
 <header class="topbar">
   <a class="brand" href="/">
     <span class="brand__mark" aria-hidden="true"></span>
-    Nutiz Musicbox
+    {{ 'APP_NAME' | translate }}
   </a>
 
   <!-- Mobile toggle -->
@@ -12,20 +12,27 @@
   <!-- Desktop tabs -->
   <div class="topbar-tabs">
     <button class="topbar-tab" (click)="openLibrary('youtube')">
-      <i class="fa-brands fa-youtube" style="color: #ff3d8b;"></i> YouTube
+      <i class="fa-brands fa-youtube" style="color: #ff3d8b;"></i> {{ 'YOUTUBE_TAB' | translate }}
     </button>
     <button class="topbar-tab" (click)="openLibrary('local')">
-      <i class="fa-solid fa-folder-open" style="color: #3ee6c4;"></i> Beat máy
+      <i class="fa-solid fa-folder-open" style="color: #3ee6c4;"></i> {{ 'LOCAL_TAB' | translate }}
     </button>
     <button class="topbar-tab" (click)="openLibrary('favorites')">
-      <i class="fa-solid fa-heart" style="color: #ffb547;"></i> Yêu thích
+      <i class="fa-solid fa-heart" style="color: #ffb547;"></i> {{ 'FAVORITES_TAB' | translate }}
     </button>
   </div>
 
-  <span class="status" [class.status--live]="recorderService.hasPermission()">
-    <i class="fa-solid" [class.fa-microphone]="recorderService.hasPermission()" [class.fa-microphone-slash]="!recorderService.hasPermission()"></i>
-    {{ recorderService.hasPermission() ? 'Mic đã kết nối' : 'Chưa cấp quyền mic' }}
-  </span>
+  <div style="display: flex; align-items: center; gap: 12px;">
+    <!-- Language Toggle -->
+    <button (click)="translateService.toggleLang()" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 4px 10px; border-radius: 999px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+      {{ translateService.currentLang() === 'vi' ? '🇻🇳 VI' : '🇬🇧 EN' }}
+    </button>
+    
+    <span class="status" [class.status--live]="recorderService.hasPermission()">
+      <i class="fa-solid" [class.fa-microphone]="recorderService.hasPermission()" [class.fa-microphone-slash]="!recorderService.hasPermission()"></i>
+      {{ recorderService.hasPermission() ? ('MIC_CONNECTED' | translate) : ('MIC_DISCONNECTED' | translate) }}
+    </span>
+  </div>
 </header>
 
 <div class="layout">

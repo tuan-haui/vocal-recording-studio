@@ -3,18 +3,21 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { KaraokePlayerComponent } from '../../features/karaoke-player/karaoke-player.component';
 import { FavoritesService } from '../../core/services/favorites.service';
+import { TranslateService } from '../../core/services/translate.service';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { Song } from '../../core/models';
 
 @Component({
   selector: 'app-listen',
   standalone: true,
-  imports: [CommonModule, KaraokePlayerComponent],
+  imports: [CommonModule, KaraokePlayerComponent, TranslatePipe],
   templateUrl: './listen.component.html',
   styleUrls: ['./listen.component.scss']
 })
 export class ListenComponent {
   currentSong = signal<Song | null>(null);
   favoritesService = inject(FavoritesService);
+  translateService = inject(TranslateService);
   router = inject(Router);
 
   constructor() {

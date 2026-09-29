@@ -7,10 +7,13 @@ import { YoutubeService } from '../../core/services/youtube.service';
 import { FavoritesService } from '../../core/services/favorites.service';
 import { Song } from '../../core/models';
 
+import { TranslateService } from '../../core/services/translate.service';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
+
 @Component({
   selector: 'app-youtube-search',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslatePipe],
   templateUrl: './youtube-search.component.html',
   styleUrls: ['./youtube-search.component.scss']
 })
@@ -35,34 +38,36 @@ export class YouTubeSearchComponent implements OnDestroy {
 
   private youtubeService = inject(YoutubeService);
   favoritesService = inject(FavoritesService);
+  translateService = inject(TranslateService);
 
   activeTab = signal<'youtube' | 'local' | 'favorites'>('youtube');
   localTracks = signal<Song[]>([]);
 
   searchQuery = signal('');
+  isKaraokeMode = signal(false);
   results = signal<Song[]>([]);
   isLoading = signal(false);
   error = signal<string | null>(null);
   selectedVideoId = signal<string | null>(null);
 
-  private searchSubject = new Subject<string>();
+  private searchSubject = new Subject<{query: string, isKaraoke: boolean}>();
   private subscription: Subscription;
 
   constructor() {
     this.subscription = this.searchSubject.pipe(
       debounceTime(300),
-      distinctUntilChanged(),
+      distinctUntilChanged((prev, curr) => prev.query === curr.query && prev.isKaraoke === curr.isKaraoke),
       tap(() => {
         this.isLoading.set(true);
         this.error.set(null);
       }),
-      switchMap(query => {
+      switchMap(({query, isKaraoke}) => {
         if (!query.trim()) {
           this.isLoading.set(false);
           this.results.set([]);
           return of(null);
         }
-        return this.youtubeService.search(query).pipe(
+        return this.youtubeService.search(query, isKaraoke).pipe(
           catchError(() => {
             this.error.set('Không thể tải kết quả tìm kiếm.');
             this.isLoading.set(false);
@@ -80,11 +85,19 @@ export class YouTubeSearchComponent implements OnDestroy {
 
   onSearchChange(query: string) {
     this.searchQuery.set(query);
-    this.searchSubject.next(query);
+    this.searchSubject.next({query, isKaraoke: this.isKaraokeMode()});
+  }
+
+  toggleKaraokeMode() {
+    this.isKaraokeMode.set(!this.isKaraokeMode());
+    // Trigger search again if there is a query
+    if (this.searchQuery().trim()) {
+      this.searchSubject.next({query: this.searchQuery(), isKaraoke: this.isKaraokeMode()});
+    }
   }
 
   onSearch() {
-    this.searchSubject.next(this.searchQuery());
+    this.searchSubject.next({query: this.searchQuery(), isKaraoke: this.isKaraokeMode()});
   }
 
   onFileSelected(event: Event): void {

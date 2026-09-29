@@ -4,10 +4,12 @@ import { AudioRecorderService } from '../../core/services/audio-recorder.service
 import { AudioAnalyserService } from '../../core/services/audio-analyser.service';
 import { RecordingSessionService } from '../../core/services/recording-session.service';
 
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
+
 @Component({
   selector: 'app-recorder',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './recorder.component.html',
   styleUrl: './recorder.component.scss'
 })

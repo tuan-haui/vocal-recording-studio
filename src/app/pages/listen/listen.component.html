@@ -1,10 +1,15 @@
 <header class="topbar">
   <button class="back-btn" (click)="goBack()">
-    <i class="fa-solid fa-arrow-left"></i> Quay lại
+    <i class="fa-solid fa-arrow-left"></i> {{ 'BACK' | translate }}
   </button>
-  <span class="brand">
-    <i class="fa-solid fa-headphones" style="color: #ff3d8b; margin-right: 8px;"></i> Nghe nhạc
-  </span>
+  <div style="display: flex; align-items: center; gap: 16px;">
+    <button (click)="translateService.toggleLang()" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 4px 10px; border-radius: 999px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+      {{ translateService.currentLang() === 'vi' ? '🇻🇳 VI' : '🇬🇧 EN' }}
+    </button>
+    <span class="brand">
+      <i class="fa-solid fa-headphones" style="color: #ff3d8b; margin-right: 8px;"></i> {{ 'LISTEN_MODE' | translate }}
+    </span>
+  </div>
 </header>
 
 <div class="listen-layout">
@@ -14,8 +19,8 @@
 
   <aside class="playlist-sidebar">
     <div class="sidebar-header">
-      <h3><i class="fa-solid fa-heart" style="color: #ff3d8b;"></i> Playlist của bạn</h3>
-      <span class="count">{{ favoritesService.favorites().length }} bài</span>
+      <h3><i class="fa-solid fa-heart" style="color: #ff3d8b;"></i> {{ 'PLAYLIST_YOURS' | translate }}</h3>
+      <span class="count">{{ favoritesService.favorites().length }}</span>
     </div>
 
     <ul class="songs">
@@ -38,8 +43,8 @@
 
     <div class="empty" *ngIf="favoritesService.favorites().length === 0">
       <i class="fa-solid fa-heart-crack" style="font-size: 2rem; color: #a99bc4; margin-bottom: 8px; opacity: 0.5;"></i>
-      <p class="empty__title">Chưa có bài hát nào</p>
-      <p class="empty__hint">Hãy quay lại Studio và thả tim cho các bài hát để tạo playlist nhé!</p>
+      <p class="empty__title">{{ 'EMPTY_FAV_TITLE' | translate }}</p>
+      <p class="empty__hint">{{ 'EMPTY_FAV_LISTEN_HINT' | translate }}</p>
     </div>
   </aside>
 </div>
