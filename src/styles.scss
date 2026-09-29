@@ -271,7 +271,7 @@ h2 { margin: 0; font-size: 1rem; font-weight: 600; }
   50% { opacity: 1; }
 }
 
-.songs { flex: 1; min-height: 0; list-style: none; margin: 0; padding: 0; overflow-y: auto; display: grid; gap: 4px; }
+.songs { flex: 1; min-height: 0; list-style: none; margin: 0; padding: 0; overflow-y: auto; display: grid; align-content: start; gap: 4px; }
 
 .song {
   display: flex; gap: 12px; width: 100%;
