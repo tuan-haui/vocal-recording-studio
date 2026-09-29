@@ -1,0 +1,31 @@
+<header class="topbar">
+  <a class="brand" href="/">
+    <span class="brand__mark" aria-hidden="true"></span>
+    Vocal Studio
+  </a>
+  <span class="status" [class.status--live]="recorderService.hasPermission()">
+    {{ recorderService.hasPermission() ? 'Mic đã kết nối' : 'Mic tắt' }}
+  </span>
+</header>
+
+<div class="layout">
+  <app-youtube-search 
+    [isOpen]="isLibraryOpen()" 
+    (closeLibrary)="isLibraryOpen.set(false)"
+    (songSelected)="onSongSelected($event)">
+  </app-youtube-search>
+
+  <main class="stage">
+    <app-karaoke-player [currentSong]="currentSong()"></app-karaoke-player>
+    <app-recorder></app-recorder>
+    <app-waveform></app-waveform>
+    <app-current-take></app-current-take>
+  </main>
+</div>
+
+<button class="library-toggle" id="libraryToggle" (click)="toggleLibrary()">Chọn bài</button>
+
+<app-song-change-guard 
+  *ngIf="showGuard()" 
+  (action)="onGuardAction($event)">
+</app-song-change-guard>

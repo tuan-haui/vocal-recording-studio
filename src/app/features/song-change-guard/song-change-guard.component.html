@@ -1,0 +1,19 @@
+<div class="guard-overlay" (click)="onCancel()">
+  <div class="guard-dialog" (click)="$event.stopPropagation()">
+    <div class="guard-icon">⚠️</div>
+    <h2>Unsaved Recording</h2>
+    <p>You have an unsaved recording. What would you like to do before switching songs?</p>
+    
+    <div class="guard-actions">
+      <button class="btn btn-save" (click)="onSave()">
+        💾 Save Recording
+      </button>
+      <button class="btn btn-delete" (click)="onDelete()">
+        🗑️ Delete Recording
+      </button>
+      <button class="btn btn-cancel" (click)="onCancel()">
+        ← Stay on Current Song
+      </button>
+    </div>
+  </div>
+</div>

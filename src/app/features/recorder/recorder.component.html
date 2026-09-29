@@ -1,0 +1,25 @@
+<section class="rec" aria-label="Thu âm">
+  <div class="rec__head">
+    <h2 *ngIf="!sessionService.countdownActive()">Thu âm</h2>
+    <h2 *ngIf="sessionService.countdownActive()" style="color: #ff3d8b;">{{ sessionService.countdownValue() }}</h2>
+    <div class="meter" [style.--level]="(analyserService.inputLevel() * 100) + '%'">
+      <span class="meter__fill"></span>
+    </div>
+  </div>
+  <div class="rec__controls">
+    <output class="rec__time" id="recTime">{{ formatDuration(recorderService.recordingDuration()) }}</output>
+    <button class="rec-btn" id="recBtn" type="button" 
+            [class.is-recording]="recorderService.isRecording()"
+            (click)="!recorderService.hasPermission() ? requestPermission() : (recorderService.isRecording() ? stopRecording() : startRecording())"
+            [disabled]="recorderService.hasPermission() && !recorderService.isRecording() && !sessionService.canRecord()">
+      <span class="rec-btn__dot"></span>
+      <span class="rec-btn__label">
+        <ng-container *ngIf="!recorderService.hasPermission()">Mic</ng-container>
+        <ng-container *ngIf="recorderService.hasPermission()">
+          {{ recorderService.isRecording() ? 'Dừng' : 'Thu âm' }}
+        </ng-container>
+      </span>
+    </button>
+  </div>
+  <app-waveform></app-waveform>
+</section>

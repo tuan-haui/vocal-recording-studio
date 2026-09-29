@@ -1,1 +1,277 @@
-/* You can add global styles to this file, and also import other style files */
+// ============ Tokens ============
+// Bảng màu: tím mận (nền sân khấu), hồng neon (thu âm), hổ phách (đèn marquee), xanh ngọc (mic sống)
+$plum-900: #140c22;
+$plum-800: #1d1231;
+$plum-700: #2a1b45;
+$ink: #f6eefc;
+$ink-dim: #a99bc4;
+$neon: #ff3d8b;
+$amber: #ffb547;
+$teal: #3ee6c4;
+
+$radius-lg: 22px;
+$radius-md: 14px;
+$bp-tablet: 900px;
+$bp-mobile: 600px;
+
+@mixin up($bp) { @media (min-width: $bp) { @content; } }
+@mixin down($bp) { @media (max-width: $bp - 1px) { @content; } }
+@mixin focus-ring { &:focus-visible { outline: 2px solid $amber; outline-offset: 2px; } }
+
+// ============ Base ============
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  font-family: "Be Vietnam Pro", system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color: $ink;
+  background:
+    radial-gradient(60vw 40vh at 75% -10%, rgba($neon, .22), transparent 70%),
+    radial-gradient(50vw 40vh at 0% 100%, rgba($amber, .10), transparent 70%),
+    $plum-900;
+  background-attachment: fixed;
+}
+
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+h2 { margin: 0; font-size: 1rem; font-weight: 600; }
+
+// ============ Top bar ============
+.topbar {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px clamp(16px, 3vw, 32px);
+  padding-top: calc(12px + env(safe-area-inset-top, 0px));
+  background: rgba($plum-900, .8);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(#fff, .06);
+}
+
+.brand {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 800; font-size: 1.1rem; letter-spacing: -.01em;
+  color: $ink; text-decoration: none;
+
+  &__mark {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: $neon;
+    box-shadow: 0 0 0 4px rgba($neon, .25), 0 0 18px $neon;
+  }
+}
+
+.status {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 12px; border-radius: 999px;
+  font-size: .8rem; color: $ink-dim;
+  background: rgba(#fff, .05);
+
+  &::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: $ink-dim; }
+  &--live { color: $teal; &::before { background: $teal; box-shadow: 0 0 8px $teal; } }
+}
+
+// ============ Layout ============
+.layout {
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr);
+  gap: clamp(16px, 2.5vw, 32px);
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: clamp(16px, 3vw, 32px);
+
+  @include down($bp-tablet) { grid-template-columns: 1fr; padding-bottom: 96px; }
+}
+
+.stage { display: grid; gap: 20px; align-content: start; min-width: 0; }
+
+// ============ Thư viện bài hát ============
+.library {
+  position: sticky; top: 76px;
+  align-self: start;
+  max-height: calc(100dvh - 100px);
+  display: flex; flex-direction: column; gap: 14px;
+  padding: 16px;
+  background: rgba($plum-800, .7);
+  border: 1px solid rgba(#fff, .07);
+  border-radius: $radius-lg;
+
+  &__handle { display: none; }
+
+  // Mobile: bottom sheet
+  @include down($bp-tablet) {
+    position: fixed; inset: auto 0 0 0; top: auto; z-index: 30;
+    max-height: 72dvh;
+    border-radius: $radius-lg $radius-lg 0 0;
+    background: $plum-800;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    transform: translateY(105%);
+    transition: transform .28s cubic-bezier(.2, .8, .2, 1);
+    box-shadow: 0 -20px 60px rgba(#000, .5);
+
+    &.is-open { transform: none; }
+    &__handle { display: block; width: 40px; height: 4px; margin: -4px auto 0; border-radius: 4px; background: rgba(#fff, .2); }
+  }
+}
+
+.search__input {
+  width: 100%; padding: 12px 16px;
+  border: 1px solid rgba(#fff, .1); border-radius: 999px;
+  background: rgba(#000, .25);
+  @include focus-ring;
+  &::placeholder { color: $ink-dim; }
+}
+
+.songs { list-style: none; margin: 0; padding: 0; overflow-y: auto; display: grid; gap: 4px; }
+
+.song {
+  display: flex; gap: 12px; width: 100%;
+  padding: 8px; border: 0; border-radius: $radius-md;
+  background: transparent; text-align: left;
+  transition: background .15s;
+  @include focus-ring;
+
+  &:hover { background: rgba(#fff, .05); }
+  &.is-active { background: rgba($neon, .14); box-shadow: inset 3px 0 0 $neon; }
+
+  &__thumb {
+    flex: none; width: 76px; aspect-ratio: 16 / 10; border-radius: 10px;
+    background: linear-gradient(135deg, hsl(var(--hue) 80% 55%), hsl(calc(var(--hue) + 40) 70% 25%));
+  }
+  &__meta { display: grid; align-content: center; gap: 2px; min-width: 0; }
+  &__title {
+    font-size: .85rem; font-weight: 600; line-height: 1.35;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  &__channel { font-size: .75rem; color: $ink-dim; }
+}
+
+.library-toggle {
+  display: none;
+  @include down($bp-tablet) {
+    display: block;
+    position: fixed; z-index: 25;
+    left: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    padding: 12px 20px; border: 1px solid rgba(#fff, .15); border-radius: 999px;
+    background: $plum-700; font-weight: 600;
+    box-shadow: 0 10px 30px rgba(#000, .4);
+  }
+}
+
+// ============ Trình phát ============
+.player {
+  overflow: hidden;
+  background: rgba($plum-800, .7);
+  border: 1px solid rgba(#fff, .07);
+  border-radius: $radius-lg;
+
+  &__screen {
+    aspect-ratio: 16 / 9; background: #000;
+    iframe { width: 100%; height: 100%; border: 0; display: block; }
+  }
+
+  &__bar {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px;
+    @include down($bp-mobile) { gap: 8px; padding: 10px 12px; }
+  }
+
+  &__now {
+    margin: 0; padding: 10px 16px;
+    font-size: .8rem; color: $ink-dim;
+    background: rgba(#000, .2);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    span { color: $amber; font-weight: 600; margin-right: 8px; }
+  }
+}
+
+.icon-btn {
+  flex: none; width: 40px; height: 40px; border-radius: 50%;
+  border: 0; background: $neon; color: #fff; font-size: .9rem;
+  @include focus-ring;
+}
+
+.time { font-size: .8rem; font-variant-numeric: tabular-nums; color: $ink-dim; }
+
+.range {
+  flex: 1; min-width: 0; height: 4px; appearance: none;
+  border-radius: 4px; background: rgba(#fff, .15); cursor: pointer;
+  &::-webkit-slider-thumb { appearance: none; width: 14px; height: 14px; border-radius: 50%; background: $ink; }
+  &::-moz-range-thumb { width: 14px; height: 14px; border: 0; border-radius: 50%; background: $ink; }
+  &--volume { flex: none; width: 90px; @include down($bp-mobile) { display: none; } }
+}
+
+// ============ Thu âm ============
+.rec {
+  display: grid; gap: 20px;
+  padding: clamp(16px, 3vw, 28px);
+  background: rgba($plum-800, .7);
+  border: 1px solid rgba(#fff, .07);
+  border-radius: $radius-lg;
+
+  &__head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+
+  &__controls {
+    display: flex; align-items: center; justify-content: center; gap: clamp(20px, 6vw, 56px);
+    @include down($bp-mobile) { flex-direction: column; gap: 16px; }
+  }
+
+  &__time {
+    font-size: clamp(2.4rem, 8vw, 3.6rem); font-weight: 800;
+    font-variant-numeric: tabular-nums; letter-spacing: -.02em;
+  }
+}
+
+.meter {
+  flex: 0 1 260px; height: 8px; border-radius: 8px; overflow: hidden;
+  background: rgba(#fff, .1);
+  &__fill {
+    display: block; height: 100%; width: var(--level, 0%);
+    background: linear-gradient(90deg, $teal 0 60%, $amber 60% 85%, $neon 85%);
+    transition: width .08s linear;
+  }
+}
+
+// Nút thu âm: điểm nhấn của trang
+.rec-btn {
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 16px 32px; border: 0; border-radius: 999px;
+  background: $neon; color: #fff; font-weight: 800; font-size: 1.05rem;
+  box-shadow: 0 0 0 0 rgba($neon, .5), 0 10px 30px rgba($neon, .35);
+  transition: transform .15s;
+  @include focus-ring;
+
+  &:active { transform: scale(.97); }
+  @include down($bp-mobile) { width: 100%; justify-content: center; }
+
+  &__dot { width: 14px; height: 14px; border-radius: 50%; background: #fff; transition: border-radius .2s; }
+
+  &.is-recording {
+    animation: pulse 1.6s infinite;
+    .rec-btn__dot { border-radius: 3px; }
+  }
+}
+
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 rgba($neon, .55), 0 10px 30px rgba($neon, .35); }
+  100% { box-shadow: 0 0 0 22px rgba($neon, 0), 0 10px 30px rgba($neon, .35); }
+}
+
+.wave {
+  width: 100%; height: 96px; display: block;
+  border-radius: $radius-md; background: rgba(#000, .3);
+}
+
+// ============ Bản thu ============
+.empty {
+  display: grid; justify-items: center; gap: 4px;
+  padding: 32px 16px; text-align: center;
+  border: 1.5px dashed rgba(#fff, .15); border-radius: $radius-lg;
+  &__title { margin: 0; font-weight: 600; }
+  &__hint { margin: 0; font-size: .85rem; color: $ink-dim; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}

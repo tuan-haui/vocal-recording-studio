@@ -1,0 +1,37 @@
+<section class="takes" aria-label="Bản thu">
+  <!-- If EMPTY -->
+  <div class="empty" *ngIf="sessionService.sessionState() !== 'CURRENT_TAKE' && sessionService.sessionState() !== 'RECORDING'">
+    <p class="empty__title">Chưa có bản thu nào</p>
+    <p class="empty__hint">Nhấn Thu âm và hát cùng bài đang phát.</p>
+  </div>
+  
+  <!-- If CURRENT_TAKE -->
+  <div class="take-card" *ngIf="sessionService.sessionState() === 'CURRENT_TAKE' && sessionService.currentTake() as take">
+    <h3>Bản thu hiện tại</h3>
+    <p class="take-meta">{{ take.songTitle }} • {{ formatTime(take.duration) }}</p>
+
+    <div class="take-player">
+      <button class="icon-btn icon-btn--play" type="button" (click)="playTake()">
+        {{ audioPlayer.isPlaying() ? '⏸' : '▶' }}
+      </button>
+      <span class="time">{{ formatTime(audioPlayer.currentTime()) }}</span>
+      <input class="range" type="range" 
+             [max]="audioPlayer.duration() || 100" 
+             [value]="audioPlayer.currentTime()" 
+             readonly>
+      <span class="time">{{ formatTime(audioPlayer.duration()) }}</span>
+    </div>
+
+    <div class="take-actions">
+      <button class="rec-btn" style="width: auto; padding: 0 1.5rem;" (click)="saveTake()">
+        <span class="rec-btn__label">Lưu</span>
+      </button>
+      <button class="rec-btn" style="width: auto; padding: 0 1.5rem; background: rgba(255,255,255,0.1);" (click)="reRecord()">
+        <span class="rec-btn__label">Thu lại</span>
+      </button>
+      <button class="rec-btn" style="width: auto; padding: 0 1.5rem; background: rgba(255, 61, 139, 0.1); border: 1px solid #ff3d8b;" (click)="deleteTake()">
+        <span class="rec-btn__label" style="color: #ff3d8b;">Xóa</span>
+      </button>
+    </div>
+  </div>
+</section>

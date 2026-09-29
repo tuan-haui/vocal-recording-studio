@@ -1,0 +1,28 @@
+<aside class="library" [class.is-open]="isOpen">
+  <div class="library__handle" aria-hidden="true" (click)="closeLibrary.emit()"></div>
+  <form class="search" role="search" (submit)="$event.preventDefault(); onSearch()">
+    <input 
+      class="search__input" 
+      type="search" 
+      placeholder="Tìm bài hát karaoke"
+      [ngModel]="searchQuery()" 
+      (ngModelChange)="onSearchChange($event)"
+      name="search"
+    >
+  </form>
+  
+  <div *ngIf="isLoading()" style="text-align: center; padding: 10px; color: var(--text-secondary);">Searching...</div>
+  <div *ngIf="error()" style="text-align: center; padding: 10px; color: var(--danger);">{{ error() }}</div>
+  
+  <ul class="songs" *ngIf="!isLoading()">
+    <li *ngFor="let result of results()">
+      <button class="song" [class.is-active]="result.videoId === selectedVideoId()" type="button" (click)="selectSong(result)">
+        <span class="song__thumb" style="background-image: url('{{result.thumbnailUrl}}'); background-size: cover; background-position: center;"></span>
+        <span class="song__meta">
+          <span class="song__title">{{ result.title }}</span>
+          <span class="song__channel">{{ result.channelTitle }}</span>
+        </span>
+      </button>
+    </li>
+  </ul>
+</aside>
