@@ -15,7 +15,11 @@ export class KaraokePlayerComponent implements AfterViewInit, OnDestroy {
   @Input() set currentSong(song: Song | null) {
     this._currentSong = song;
     if (song) {
-      this.loadSong(song.videoId);
+      if (song.source === 'local' && song.localUrl) {
+        this.playerService.setLocalMedia(song.localUrl, song.mediaType || 'audio');
+      } else if (song.videoId) {
+        this.loadSong(song.videoId);
+      }
     }
   }
 

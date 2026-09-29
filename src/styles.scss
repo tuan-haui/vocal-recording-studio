@@ -115,6 +115,108 @@ h2 { margin: 0; font-size: 1rem; font-weight: 600; }
   }
 }
 
+// ============ Library Tabs & Upload ============
+.library-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  background: rgba(#000, 0.3);
+  padding: 4px;
+  border-radius: $radius-md;
+  border: 1px solid rgba(#fff, 0.08);
+  margin-bottom: 2px;
+}
+
+.library-tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: $ink-dim;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: $ink;
+    background: rgba(#fff, 0.06);
+  }
+
+  &.is-active {
+    background: $neon;
+    color: #fff;
+    box-shadow: 0 4px 14px rgba($neon, 0.35);
+  }
+}
+
+.upload-dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  border: 2px dashed rgba($neon, 0.4);
+  border-radius: $radius-md;
+  background: rgba($plum-700, 0.25);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  gap: 6px;
+
+  &:hover {
+    border-color: $neon;
+    background: rgba($neon, 0.08);
+    transform: translateY(-2px);
+  }
+
+  .upload-icon {
+    font-size: 2.2rem;
+    color: $neon;
+    margin-bottom: 4px;
+  }
+
+  .upload-title {
+    margin: 0;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: $ink;
+  }
+
+  .upload-sub {
+    font-size: 0.75rem;
+    color: $ink-dim;
+    margin-bottom: 8px;
+  }
+
+  .upload-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba($neon, 0.5);
+    background: rgba($neon, 0.15);
+    color: $ink;
+    font-size: 0.8rem;
+    font-weight: 600;
+    pointer-events: none;
+  }
+}
+
+.song__thumb--local {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, $plum-700, $plum-900) !important;
+  border: 1px solid rgba(#fff, 0.1);
+  color: $neon;
+  font-size: 1.5rem;
+}
+
 .search__input {
   width: 100%; padding: 12px 16px;
   border: 1px solid rgba(#fff, .1); border-radius: 999px;
@@ -167,8 +269,17 @@ h2 { margin: 0; font-size: 1rem; font-weight: 600; }
   border-radius: $radius-lg;
 
   &__screen {
-    aspect-ratio: 16 / 9; background: #000;
-    iframe { width: 100%; height: 100%; border: 0; display: block; }
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    overflow: hidden;
+
+    iframe, #youtube-player {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
   }
 
   &__bar {
@@ -183,6 +294,128 @@ h2 { margin: 0; font-size: 1rem; font-weight: 600; }
     background: rgba(#000, .2);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     span { color: $amber; font-weight: 600; margin-right: 8px; }
+  }
+}
+
+// ============ Local Media & Vinyl Screen ============
+.local-screen {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at center, $plum-700 0%, #080312 100%);
+}
+
+.local-video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.vinyl-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  text-align: center;
+  padding: 20px;
+}
+
+.vinyl-disc {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #2a2038 0%, #150e24 60%, #05020a 100%);
+  border: 4px solid rgba(#fff, 0.15);
+  box-shadow: 0 10px 35px rgba(#000, 0.8), 0 0 25px rgba($neon, 0.25);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.5s;
+
+  &.is-spinning {
+    animation: vinylSpin 5s linear infinite;
+  }
+}
+
+.vinyl-groove {
+  position: absolute;
+  inset: 14px;
+  border-radius: 50%;
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+}
+
+.vinyl-label {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: $neon;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.5rem;
+  box-shadow: 0 0 15px rgba($neon, 0.6);
+}
+
+@keyframes vinylSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.vinyl-details {
+  h4 {
+    margin: 0 0 6px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: $ink;
+    max-width: 450px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .vinyl-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: $teal;
+    background: rgba($teal, 0.12);
+    border: 1px solid rgba($teal, 0.25);
+    padding: 3px 12px;
+    border-radius: 999px;
+  }
+}
+
+.player-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: $ink-dim;
+  background: radial-gradient(circle at center, $plum-800 0%, $plum-900 100%);
+  text-align: center;
+  padding: 24px;
+
+  i {
+    font-size: 3.2rem;
+    opacity: 0.4;
+    color: $neon;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.95rem;
+    max-width: 320px;
   }
 }
 

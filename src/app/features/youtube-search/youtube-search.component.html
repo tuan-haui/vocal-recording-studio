@@ -1,32 +1,90 @@
 <aside class="library" [class.is-open]="isOpen">
   <div class="library__handle" aria-hidden="true" (click)="closeLibrary.emit()"></div>
-  <form class="search" role="search" (submit)="$event.preventDefault(); onSearch()">
-    <input 
-      class="search__input" 
-      type="search" 
-      placeholder="Tìm bài hát karaoke"
-      [ngModel]="searchQuery()" 
-      (ngModelChange)="onSearchChange($event)"
-      name="search"
-    >
-  </form>
-  
-  <div *ngIf="isLoading()" style="text-align: center; padding: 10px; color: #a99bc4;">
-    <i class="fa-solid fa-spinner fa-spin"></i> Đang tìm kiếm...
+
+  <!-- Library Mode Tabs: YouTube vs Beat Máy Tính -->
+  <div class="library-tabs">
+    <button type="button" 
+            class="library-tab" 
+            [class.is-active]="activeTab() === 'youtube'" 
+            (click)="activeTab.set('youtube')">
+      <i class="fa-brands fa-youtube"></i> YouTube
+    </button>
+    <button type="button" 
+            class="library-tab" 
+            [class.is-active]="activeTab() === 'local'" 
+            (click)="activeTab.set('local')">
+      <i class="fa-solid fa-folder-open"></i> Beat từ máy
+    </button>
   </div>
-  <div *ngIf="error()" style="text-align: center; padding: 10px; color: #ff3d8b;">
-    <i class="fa-solid fa-triangle-exclamation"></i> {{ error() }}
-  </div>
-  
-  <ul class="songs" *ngIf="!isLoading()">
-    <li *ngFor="let result of results()">
-      <button class="song" [class.is-active]="result.videoId === selectedVideoId()" type="button" (click)="selectSong(result)">
-        <span class="song__thumb" style="background-image: url('{{result.thumbnailUrl}}'); background-size: cover; background-position: center;"></span>
-        <span class="song__meta">
-          <span class="song__title">{{ result.title }}</span>
-          <span class="song__channel">{{ result.channelTitle }}</span>
-        </span>
+
+  <!-- TAB 1: YOUTUBE SEARCH -->
+  <ng-container *ngIf="activeTab() === 'youtube'">
+    <form class="search" role="search" (submit)="$event.preventDefault(); onSearch()">
+      <input 
+        class="search__input" 
+        type="search" 
+        placeholder="Tìm bài hát karaoke trên YouTube"
+        [ngModel]="searchQuery()" 
+        (ngModelChange)="onSearchChange($event)"
+        name="search"
+      >
+    </form>
+    
+    <div *ngIf="isLoading()" style="text-align: center; padding: 12px; color: #a99bc4;">
+      <i class="fa-solid fa-spinner fa-spin"></i> Đang tìm kiếm...
+    </div>
+    <div *ngIf="error()" style="text-align: center; padding: 12px; color: #ff3d8b;">
+      <i class="fa-solid fa-triangle-exclamation"></i> {{ error() }}
+    </div>
+    
+    <ul class="songs" *ngIf="!isLoading()">
+      <li *ngFor="let result of results()">
+        <button class="song" [class.is-active]="result.videoId === selectedVideoId()" type="button" (click)="selectSong(result)">
+          <span class="song__thumb" style="background-image: url('{{result.thumbnailUrl}}'); background-size: cover; background-position: center;"></span>
+          <span class="song__meta">
+            <span class="song__title">{{ result.title }}</span>
+            <span class="song__channel">{{ result.channelTitle }}</span>
+          </span>
+        </button>
+      </li>
+    </ul>
+  </ng-container>
+
+  <!-- TAB 2: LOCAL BEAT FILES (HƯỚNG B) -->
+  <ng-container *ngIf="activeTab() === 'local'">
+    <input #fileInput type="file" accept="audio/*,video/*" (change)="onFileSelected($event)" style="display: none">
+    
+    <div class="upload-dropzone" (click)="fileInput.click()">
+      <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+      <p class="upload-title">Tải beat từ máy tính</p>
+      <span class="upload-sub">Hỗ trợ file MP3, WAV, AAC, M4A, MP4</span>
+      <button type="button" class="upload-btn">
+        <i class="fa-solid fa-plus"></i> Chọn file
       </button>
-    </li>
-  </ul>
+    </div>
+
+    <div class="local-header" *ngIf="localTracks().length > 0" style="padding: 10px 4px 4px; font-size: 0.8rem; color: #a99bc4; font-weight: 600;">
+      <i class="fa-solid fa-list-check" style="margin-right: 4px;"></i> Danh sách beat đã tải ({{ localTracks().length }})
+    </div>
+
+    <ul class="songs" *ngIf="localTracks().length > 0">
+      <li *ngFor="let track of localTracks()">
+        <button class="song" [class.is-active]="track.videoId === selectedVideoId()" type="button" (click)="selectSong(track)">
+          <span class="song__thumb song__thumb--local">
+            <i class="fa-solid" [class.fa-file-audio]="track.mediaType !== 'video'" [class.fa-file-video]="track.mediaType === 'video'"></i>
+          </span>
+          <span class="song__meta">
+            <span class="song__title">{{ track.title }}</span>
+            <span class="song__channel">{{ track.channelTitle }}</span>
+          </span>
+        </button>
+      </li>
+    </ul>
+
+    <div class="empty" *ngIf="localTracks().length === 0" style="padding: 24px 12px; margin-top: 10px;">
+      <i class="fa-solid fa-folder-open" style="font-size: 1.8rem; color: #a99bc4; margin-bottom: 8px; opacity: 0.5;"></i>
+      <p class="empty__title">Chưa có beat nào</p>
+      <p class="empty__hint">Nhấn vào ô trên để tải beat nhạc từ thiết bị của bạn.</p>
+    </div>
+  </ng-container>
 </aside>

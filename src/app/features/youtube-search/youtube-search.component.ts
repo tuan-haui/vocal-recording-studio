@@ -20,6 +20,9 @@ export class YouTubeSearchComponent implements OnDestroy {
 
   private youtubeService = inject(YoutubeService);
 
+  activeTab = signal<'youtube' | 'local'>('youtube');
+  localTracks = signal<Song[]>([]);
+
   searchQuery = signal('');
   results = signal<Song[]>([]);
   isLoading = signal(false);
@@ -45,7 +48,7 @@ export class YouTubeSearchComponent implements OnDestroy {
         }
         return this.youtubeService.search(query).pipe(
           catchError(() => {
-            this.error.set('Failed to load search results.');
+            this.error.set('Không thể tải kết quả tìm kiếm.');
             this.isLoading.set(false);
             return of(null);
           })
@@ -66,6 +69,31 @@ export class YouTubeSearchComponent implements OnDestroy {
 
   onSearch() {
     this.searchSubject.next(this.searchQuery());
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+
+    const file = input.files[0];
+    const isVideo = file.type.startsWith('video');
+    const objectUrl = URL.createObjectURL(file);
+
+    const localSong: Song = {
+      videoId: 'local-' + Date.now(),
+      title: file.name.replace(/\.[^/.]+$/, ''),
+      channelTitle: isVideo ? 'Video từ máy' : 'Beat âm thanh từ máy',
+      thumbnailUrl: '',
+      source: 'local',
+      localUrl: objectUrl,
+      mediaType: isVideo ? 'video' : 'audio'
+    };
+
+    this.localTracks.update(tracks => [localSong, ...tracks]);
+    this.selectSong(localSong);
+
+    // Reset input
+    input.value = '';
   }
 
   selectSong(song: Song) {
