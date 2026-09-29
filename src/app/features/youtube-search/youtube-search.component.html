@@ -44,9 +44,17 @@
       </div>
     </form>
     
-    <div *ngIf="isLoading()" style="text-align: center; padding: 12px; color: #a99bc4;">
-      <i class="fa-solid fa-spinner fa-spin"></i> {{ 'SEARCHING' | translate }}
-    </div>
+    <ul class="songs" *ngIf="isLoading()">
+      <li *ngFor="let i of [1,2,3,4,5]">
+        <div class="song skeleton-item" style="pointer-events: none;">
+          <div class="skeleton-thumb" style="flex: none; width: 76px; aspect-ratio: 16 / 10; border-radius: 10px; background: rgba(255,255,255,0.05); animation: skeleton-pulse 1.5s infinite;"></div>
+          <div class="song__meta" style="width: 100%; display: flex; flex-direction: column; justify-content: center; gap: 8px;">
+            <div class="skeleton-line" style="width: 80%; height: 14px; border-radius: 4px; background: rgba(255,255,255,0.05); animation: skeleton-pulse 1.5s infinite;"></div>
+            <div class="skeleton-line" style="width: 50%; height: 10px; border-radius: 4px; background: rgba(255,255,255,0.05); animation: skeleton-pulse 1.5s infinite;"></div>
+          </div>
+        </div>
+      </li>
+    </ul>
     <div *ngIf="error()" style="text-align: center; padding: 12px; color: #ff3d8b;">
       <i class="fa-solid fa-triangle-exclamation"></i> {{ 'SEARCH_ERROR' | translate }}
     </div>

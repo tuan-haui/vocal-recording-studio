@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Output, Input, inject, signal, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Subject, Subscription, of } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap, tap, catchError } from 'rxjs/operators';
+import { Subject, Subscription, of, forkJoin, timer } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap, tap, catchError, map } from 'rxjs/operators';
 import { YoutubeService } from '../../core/services/youtube.service';
 import { FavoritesService } from '../../core/services/favorites.service';
 import { Song } from '../../core/models';
@@ -67,12 +67,17 @@ export class YouTubeSearchComponent implements OnDestroy {
           this.results.set([]);
           return of(null);
         }
-        return this.youtubeService.search(query, isKaraoke).pipe(
-          catchError(() => {
-            this.error.set('Không thể tải kết quả tìm kiếm.');
-            this.isLoading.set(false);
-            return of(null);
-          })
+        
+        return forkJoin([
+          this.youtubeService.search(query, isKaraoke).pipe(
+            catchError(() => {
+              this.error.set('Không thể tải kết quả tìm kiếm.');
+              return of(null);
+            })
+          ),
+          timer(300) // Minimum 300ms loading skeleton time
+        ]).pipe(
+          map(([searchResult, _]) => searchResult)
         );
       })
     ).subscribe(searchResult => {
