@@ -1,1 +1,24 @@
 :host { display: contents; }
+
+.karaoke-toggle-text {
+  color: #a99bc4; /* Dark mode default */
+}
+.karaoke-toggle-text.is-active {
+  color: #ffb547; /* Amber when active */
+}
+
+.local-header {
+  color: #a99bc4; /* Dark mode default */
+}
+
+.skeleton-thumb, .skeleton-line {
+  background: rgba(255, 255, 255, 0.05); /* Dark mode default */
+}
+
+/* Light Mode */
+:host-context(body.light-mode) {
+  .skeleton-thumb, .skeleton-line {
+    background: rgba(0, 0, 0, 0.08);
+  }
+}
+

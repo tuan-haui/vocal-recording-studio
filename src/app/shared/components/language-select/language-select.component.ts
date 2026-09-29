@@ -133,6 +133,34 @@ import { TranslateService } from '../../../core/services/translate.service';
       color: #ff3d8b;
       font-size: 0.8rem;
     }
+
+    /* Light Mode */
+    :host-context(body.light-mode) .lang-select__current {
+      background: rgba(0, 0, 0, 0.05);
+      border-color: rgba(0, 0, 0, 0.1);
+      color: #0f172a;
+    }
+    :host-context(body.light-mode) .lang-select.is-open .lang-select__current,
+    :host-context(body.light-mode) .lang-select:hover .lang-select__current {
+      background: rgba(0, 0, 0, 0.1);
+      border-color: rgba(0, 0, 0, 0.2);
+    }
+    :host-context(body.light-mode) .lang-select__dropdown {
+      background: #ffffff;
+      border-color: rgba(0, 0, 0, 0.1);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    :host-context(body.light-mode) .lang-option {
+      color: #475569;
+    }
+    :host-context(body.light-mode) .lang-option:hover {
+      background: rgba(0, 0, 0, 0.05);
+      color: #0f172a;
+    }
+    :host-context(body.light-mode) .lang-option.active {
+      color: #0f172a;
+      background: rgba(255, 61, 139, 0.1);
+    }
   `]
 })
 export class LanguageSelectComponent {

@@ -57,10 +57,10 @@ h2 { margin: 0; font-size: 1rem; font-weight: 600; }
   font-weight: 800; font-size: 1.1rem; letter-spacing: -.01em;
   color: $ink; text-decoration: none;
 
-  &__mark {
-    width: 14px; height: 14px; border-radius: 50%;
-    background: $neon;
-    box-shadow: 0 0 0 4px rgba($neon, .25), 0 0 18px $neon;
+  &__icon {
+    width: 24px; height: 24px;
+    object-fit: contain;
+    border-radius: 4px;
   }
 }
 
@@ -69,6 +69,10 @@ h2 { margin: 0; font-size: 1rem; font-weight: 600; }
   padding: 6px 12px; border-radius: 999px;
   font-size: .8rem; color: $ink-dim;
   background: rgba(#fff, .05);
+  
+  @include down($bp-mobile) {
+    display: none;
+  }
 
   &::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: $ink-dim; }
   &--live { color: $teal; &::before { background: $teal; box-shadow: 0 0 8px $teal; } }
@@ -872,6 +876,22 @@ body.light-mode {
   .topbar-tab:hover { background: rgba(0,0,0,0.05); color: #0f172a; }
   .topbar-tabs { background: rgba(0,0,0,0.05); border-color: rgba(0,0,0,0.1); }
 
+  .library-tabs { background: rgba(0,0,0,0.05); border-color: rgba(0,0,0,0.1); }
+  .library-tab { color: #64748b; }
+  .library-tab:hover { background: rgba(0,0,0,0.05); color: #0f172a; }
+  
+  .upload-dropzone { 
+    background: rgba($neon, 0.05); 
+    border-color: rgba($neon, 0.4); 
+    .upload-title { color: #0f172a; }
+    .upload-sub { color: #64748b; }
+  }
+  .upload-dropzone:hover { background: rgba($neon, 0.1); }
+  
+  .local-header { color: #475569 !important; }
+  .karaoke-toggle-text { color: #475569 !important; }
+  .karaoke-toggle-text.is-active { color: #b45309 !important; } /* Dark orange when active */
+
   .bottom-nav { background: #ffffff; border-top: 1px solid rgba(0,0,0,0.1); }
   .bottom-nav__item { color: #64748b; }
   .bottom-nav__item.is-active { color: $neon; }
@@ -912,7 +932,7 @@ body.light-mode {
     justify-content: space-around;
     align-items: center;
 
-    .nav-item {
+    .bottom-nav__item {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -920,8 +940,13 @@ body.light-mode {
       color: $ink-dim;
       font-size: 0.75rem;
       text-decoration: none;
+      background: transparent;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      font-family: inherit;
       
-      &.active {
+      &.is-active {
         color: $neon;
       }
       

@@ -36,9 +36,9 @@
         name="search"
         style="padding-right: 110px;"
       >
-      <div class="karaoke-toggle" style="position: absolute; right: 6px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.4); padding: 4px 8px; border-radius: 999px; cursor: pointer;" (click)="toggleKaraokeMode()" [title]="'KARAOKE_TOGGLE_TITLE' | translate">
-        <span style="font-size: 0.75rem; font-weight: 600; transition: color 0.2s;" [style.color]="isKaraokeMode() ? '#ffb547' : '#a99bc4'">{{ 'KARAOKE_TOGGLE' | translate }}</span>
-        <div class="toggle-switch" style="width: 28px; height: 16px; border-radius: 999px; background: rgba(255,255,255,0.2); position: relative; transition: all 0.2s;" [style.background]="isKaraokeMode() ? 'rgba(255, 181, 71, 0.3)' : 'rgba(255,255,255,0.2)'">
+      <div class="karaoke-toggle" style="position: absolute; right: 6px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.05); padding: 4px 8px; border-radius: 999px; cursor: pointer;" (click)="toggleKaraokeMode()" [title]="'KARAOKE_TOGGLE_TITLE' | translate">
+        <span class="karaoke-toggle-text" style="font-size: 0.75rem; font-weight: 600; transition: color 0.2s;" [class.is-active]="isKaraokeMode()">{{ 'KARAOKE_TOGGLE' | translate }}</span>
+        <div class="toggle-switch" style="width: 28px; height: 16px; border-radius: 999px; position: relative; transition: all 0.2s;" [style.background]="isKaraokeMode() ? 'rgba(255, 181, 71, 0.3)' : 'rgba(0,0,0,0.1)'">
           <div class="toggle-thumb" style="width: 12px; height: 12px; border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: all 0.2s;" [style.transform]="isKaraokeMode() ? 'translateX(12px)' : 'translateX(0)'" [style.backgroundColor]="isKaraokeMode() ? '#ffb547' : '#fff'"></div>
         </div>
       </div>
@@ -47,10 +47,10 @@
     <ul class="songs" *ngIf="isLoading()">
       <li *ngFor="let i of [1,2,3,4,5]">
         <div class="song skeleton-item" style="pointer-events: none;">
-          <div class="skeleton-thumb" style="flex: none; width: 76px; aspect-ratio: 16 / 10; border-radius: 10px; background: rgba(255,255,255,0.05); animation: skeleton-pulse 1.5s infinite;"></div>
+          <div class="skeleton-thumb" style="flex: none; width: 76px; aspect-ratio: 16 / 10; border-radius: 10px; animation: skeleton-pulse 1.5s infinite;"></div>
           <div class="song__meta" style="width: 100%; display: flex; flex-direction: column; justify-content: center; gap: 8px;">
-            <div class="skeleton-line" style="width: 80%; height: 14px; border-radius: 4px; background: rgba(255,255,255,0.05); animation: skeleton-pulse 1.5s infinite;"></div>
-            <div class="skeleton-line" style="width: 50%; height: 10px; border-radius: 4px; background: rgba(255,255,255,0.05); animation: skeleton-pulse 1.5s infinite;"></div>
+            <div class="skeleton-line" style="width: 80%; height: 14px; border-radius: 4px; animation: skeleton-pulse 1.5s infinite;"></div>
+            <div class="skeleton-line" style="width: 50%; height: 10px; border-radius: 4px; animation: skeleton-pulse 1.5s infinite;"></div>
           </div>
         </div>
       </li>
@@ -91,7 +91,7 @@
       </button>
     </div>
 
-    <div class="local-header" *ngIf="localTracks().length > 0" style="padding: 10px 4px 4px; font-size: 0.8rem; color: #a99bc4; font-weight: 600;">
+    <div class="local-header" *ngIf="localTracks().length > 0" style="padding: 10px 4px 4px; font-size: 0.8rem; font-weight: 600;">
       <i class="fa-solid fa-list-check" style="margin-right: 4px;"></i> {{ 'UPLOADED_LIST' | translate }} ({{ localTracks().length }})
     </div>
 
@@ -124,7 +124,7 @@
 
   <!-- TAB 3: FAVORITES PLAYLIST (CHẾ ĐỘ NGHE NHẠC) -->
   <ng-container *ngIf="activeTab() === 'favorites'">
-    <div class="local-header" *ngIf="favoritesService.favorites().length > 0" style="display: flex; align-items: center; justify-content: space-between; padding: 6px 4px 10px; font-size: 0.85rem; color: #a99bc4; font-weight: 600;">
+    <div class="local-header" *ngIf="favoritesService.favorites().length > 0" style="display: flex; align-items: center; justify-content: space-between; padding: 6px 4px 10px; font-size: 0.85rem; font-weight: 600;">
       <span><i class="fa-solid fa-headphones" style="color: #ff3d8b; margin-right: 4px;"></i> {{ 'FAVORITES_PLAYLIST' | translate }} ({{ favoritesService.favorites().length }})</span>
       <button class="expand-btn" (click)="expandFavorites.emit()" style="background: rgba(255, 61, 139, 0.15); border: 1px solid rgba(255, 61, 139, 0.3); color: #ff3d8b; padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; cursor: pointer; transition: all 0.2s;">
         <i class="fa-solid fa-expand"></i> {{ 'EXPAND' | translate }}
