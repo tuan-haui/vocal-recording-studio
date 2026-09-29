@@ -5,12 +5,13 @@ import { KaraokePlayerComponent } from '../../features/karaoke-player/karaoke-pl
 import { FavoritesService } from '../../core/services/favorites.service';
 import { TranslateService } from '../../core/services/translate.service';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
+import { LanguageSelectComponent } from '../../shared/components/language-select/language-select.component';
 import { Song } from '../../core/models';
 
 @Component({
   selector: 'app-listen',
   standalone: true,
-  imports: [CommonModule, KaraokePlayerComponent, TranslatePipe],
+  imports: [CommonModule, KaraokePlayerComponent, TranslatePipe, LanguageSelectComponent],
   templateUrl: './listen.component.html',
   styleUrls: ['./listen.component.scss']
 })

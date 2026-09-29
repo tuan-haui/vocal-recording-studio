@@ -23,10 +23,8 @@
   </div>
 
   <div style="display: flex; align-items: center; gap: 12px;">
-    <!-- Language Toggle -->
-    <button (click)="translateService.toggleLang()" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 4px 10px; border-radius: 999px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s;">
-      {{ translateService.currentLang() === 'vi' ? '🇻🇳 VI' : '🇬🇧 EN' }}
-    </button>
+    <!-- Language Select -->
+    <app-language-select></app-language-select>
     
     <span class="status" [class.status--live]="recorderService.hasPermission()">
       <i class="fa-solid" [class.fa-microphone]="recorderService.hasPermission()" [class.fa-microphone-slash]="!recorderService.hasPermission()"></i>
