@@ -1,10 +1,11 @@
 <header class="topbar">
   <a class="brand" href="/">
     <span class="brand__mark" aria-hidden="true"></span>
-    Vocal Studio
+    Nutiz Musicbox
   </a>
   <span class="status" [class.status--live]="recorderService.hasPermission()">
-    {{ recorderService.hasPermission() ? 'Mic đã kết nối' : 'Mic tắt' }}
+    <i class="fa-solid" [class.fa-microphone]="recorderService.hasPermission()" [class.fa-microphone-slash]="!recorderService.hasPermission()"></i>
+    {{ recorderService.hasPermission() ? 'Mic đã kết nối' : 'Chưa cấp quyền mic' }}
   </span>
 </header>
 
@@ -18,12 +19,13 @@
   <main class="stage">
     <app-karaoke-player [currentSong]="currentSong()"></app-karaoke-player>
     <app-recorder></app-recorder>
-    <app-waveform></app-waveform>
     <app-current-take></app-current-take>
   </main>
 </div>
 
-<button class="library-toggle" id="libraryToggle" (click)="toggleLibrary()">Chọn bài</button>
+<button class="library-toggle" id="libraryToggle" (click)="toggleLibrary()">
+  <i class="fa-solid fa-music"></i> Chọn bài
+</button>
 
 <app-song-change-guard 
   *ngIf="showGuard()" 

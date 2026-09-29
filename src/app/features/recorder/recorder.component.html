@@ -1,25 +1,54 @@
 <section class="rec" aria-label="Thu âm">
   <div class="rec__head">
-    <h2 *ngIf="!sessionService.countdownActive()">Thu âm</h2>
-    <h2 *ngIf="sessionService.countdownActive()" style="color: #ff3d8b;">{{ sessionService.countdownValue() }}</h2>
+    <h2>
+      <i class="fa-solid fa-microphone-lines" style="color: #ff3d8b; margin-right: 6px;"></i>
+      Thu âm
+    </h2>
     <div class="meter" [style.--level]="(analyserService.inputLevel() * 100) + '%'">
       <span class="meter__fill"></span>
     </div>
   </div>
-  <div class="rec__controls">
+
+  <!-- Countdown Stage (Big & Animated) -->
+  <div class="countdown-stage" *ngIf="sessionService.countdownActive()">
+    <div class="countdown-stage__badge">
+      <i class="fa-solid fa-music fa-bounce"></i>
+      <span>Chuẩn bị vào bài hát</span>
+    </div>
+    
+    <div class="countdown-stage__circle-wrap">
+      <div class="countdown-pulse-ring"></div>
+      <div class="countdown-pulse-ring countdown-pulse-ring--delay"></div>
+      <div class="countdown-circle">
+        <ng-container [ngSwitch]="sessionService.countdownValue()">
+          <span *ngSwitchCase="3" class="countdown-digit">3</span>
+          <span *ngSwitchCase="2" class="countdown-digit">2</span>
+          <span *ngSwitchCase="1" class="countdown-digit">1</span>
+          <span *ngSwitchDefault class="countdown-digit">
+            <i class="fa-solid fa-microphone"></i>
+          </span>
+        </ng-container>
+      </div>
+    </div>
+    
+    <p class="countdown-stage__hint">Beat đang phát, hãy chuẩn bị giọng hát nhé!</p>
+  </div>
+
+  <!-- Standard Controls (when not counting down) -->
+  <div class="rec__controls" *ngIf="!sessionService.countdownActive()">
     <output class="rec__time" id="recTime">{{ formatDuration(recorderService.recordingDuration()) }}</output>
     <button class="rec-btn" id="recBtn" type="button" 
             [class.is-recording]="recorderService.isRecording()"
             (click)="!recorderService.hasPermission() ? requestPermission() : (recorderService.isRecording() ? stopRecording() : startRecording())"
             [disabled]="recorderService.hasPermission() && !recorderService.isRecording() && !sessionService.canRecord()">
-      <span class="rec-btn__dot"></span>
-      <span class="rec-btn__label">
-        <ng-container *ngIf="!recorderService.hasPermission()">Mic</ng-container>
-        <ng-container *ngIf="recorderService.hasPermission()">
-          {{ recorderService.isRecording() ? 'Dừng' : 'Thu âm' }}
-        </ng-container>
-      </span>
+      <ng-container *ngIf="!recorderService.hasPermission()">
+        <i class="fa-solid fa-microphone"></i>
+        <span class="rec-btn__label">Cấp quyền Mic</span>
+      </ng-container>
+      <ng-container *ngIf="recorderService.hasPermission()">
+        <i class="fa-solid" [class.fa-stop]="recorderService.isRecording()" [class.fa-circle]="!recorderService.isRecording()"></i>
+        <span class="rec-btn__label">{{ recorderService.isRecording() ? 'Dừng thu' : 'Thu âm' }}</span>
+      </ng-container>
     </button>
   </div>
-  <app-waveform></app-waveform>
 </section>

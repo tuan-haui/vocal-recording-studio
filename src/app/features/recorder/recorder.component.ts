@@ -3,12 +3,11 @@ import { CommonModule } from '@angular/common';
 import { AudioRecorderService } from '../../core/services/audio-recorder.service';
 import { AudioAnalyserService } from '../../core/services/audio-analyser.service';
 import { RecordingSessionService } from '../../core/services/recording-session.service';
-import { WaveformComponent } from '../waveform/waveform.component';
 
 @Component({
   selector: 'app-recorder',
   standalone: true,
-  imports: [CommonModule, WaveformComponent],
+  imports: [CommonModule],
   templateUrl: './recorder.component.html',
   styleUrl: './recorder.component.scss'
 })
@@ -30,6 +29,7 @@ export class RecorderComponent {
   }
 
   formatDuration(seconds: number): string {
+    if (!isFinite(seconds) || isNaN(seconds) || seconds < 0) return '00:00.0';
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     const ms = Math.floor((seconds % 1) * 10);

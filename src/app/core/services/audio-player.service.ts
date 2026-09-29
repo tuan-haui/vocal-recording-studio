@@ -9,11 +9,19 @@ export class AudioPlayerService {
   private audio: HTMLAudioElement | null = null;
   private timeUpdateInterval: any = null;
 
-  load(objectUrl: string): void {
+  load(objectUrl: string, fallbackDuration?: number): void {
     this.stop();
     this.audio = new Audio(objectUrl);
+    
+    if (fallbackDuration) {
+      this.duration.set(fallbackDuration);
+    }
+    
     this.audio.addEventListener('loadedmetadata', () => {
-      this.duration.set(this.audio!.duration);
+      const d = this.audio!.duration;
+      if (d !== Infinity && !isNaN(d)) {
+        this.duration.set(d);
+      }
     });
     this.audio.addEventListener('ended', () => {
       this.isPlaying.set(false);

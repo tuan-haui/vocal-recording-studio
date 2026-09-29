@@ -1,18 +1,23 @@
 <div class="guard-overlay" (click)="onCancel()">
   <div class="guard-dialog" (click)="$event.stopPropagation()">
-    <div class="guard-icon">⚠️</div>
-    <h2>Unsaved Recording</h2>
-    <p>You have an unsaved recording. What would you like to do before switching songs?</p>
+    <div class="guard-icon">
+      <i class="fa-solid fa-triangle-exclamation" style="font-size: 2.8rem; color: #ffb547; margin-bottom: 12px;"></i>
+    </div>
+    <h2>Bản thu chưa được lưu</h2>
+    <p>Bạn đang có một bản thu chưa lưu. Bạn muốn làm gì trước khi chuyển bài hát?</p>
     
     <div class="guard-actions">
       <button class="btn btn-save" (click)="onSave()">
-        💾 Save Recording
+        <i class="fa-solid fa-floppy-disk" style="margin-right: 8px;"></i>
+        Lưu bản thu
       </button>
       <button class="btn btn-delete" (click)="onDelete()">
-        🗑️ Delete Recording
+        <i class="fa-solid fa-trash-can" style="margin-right: 8px;"></i>
+        Xóa bản thu
       </button>
       <button class="btn btn-cancel" (click)="onCancel()">
-        ← Stay on Current Song
+        <i class="fa-solid fa-arrow-left" style="margin-right: 8px;"></i>
+        Ở lại bài hiện tại
       </button>
     </div>
   </div>

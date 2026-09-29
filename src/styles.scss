@@ -189,6 +189,7 @@ h2 { margin: 0; font-size: 1rem; font-weight: 600; }
 .icon-btn {
   flex: none; width: 40px; height: 40px; border-radius: 50%;
   border: 0; background: $neon; color: #fff; font-size: .9rem;
+  display: inline-flex; align-items: center; justify-content: center;
   @include focus-ring;
 }
 
@@ -258,9 +259,120 @@ h2 { margin: 0; font-size: 1rem; font-weight: 600; }
   100% { box-shadow: 0 0 0 22px rgba($neon, 0), 0 10px 30px rgba($neon, .35); }
 }
 
-.wave {
-  width: 100%; height: 96px; display: block;
-  border-radius: $radius-md; background: rgba(#000, .3);
+// ============ Countdown Stage ============
+.countdown-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px 20px;
+  gap: 16px;
+  animation: fadeIn 0.3s ease;
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 18px;
+    border-radius: 999px;
+    background: rgba($neon, 0.15);
+    border: 1px solid rgba($neon, 0.35);
+    color: $neon;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    box-shadow: 0 0 16px rgba($neon, 0.2);
+  }
+
+  &__circle-wrap {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 8px 0;
+  }
+
+  &__hint {
+    margin: 0;
+    font-size: 0.9rem;
+    color: $ink-dim;
+    text-align: center;
+    font-weight: 500;
+  }
+}
+
+.countdown-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, $plum-700 0%, $plum-900 100%);
+  border: 3px solid $neon;
+  box-shadow: 0 0 28px rgba($neon, 0.5), inset 0 0 20px rgba($neon, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+.countdown-pulse-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid $neon;
+  animation: countdownRipple 1.2s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+  pointer-events: none;
+
+  &--delay {
+    animation-delay: 0.6s;
+  }
+}
+
+.countdown-digit {
+  font-size: 5rem;
+  font-weight: 800;
+  line-height: 1;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 15px $neon, 0 0 35px $neon, 0 0 50px $amber;
+  animation: countdownBurst 0.9s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+  user-select: none;
+}
+
+@keyframes countdownBurst {
+  0% {
+    transform: scale(0.3) rotate(-8deg);
+    opacity: 0;
+    filter: blur(8px);
+  }
+  50% {
+    transform: scale(1.22) rotate(0deg);
+    opacity: 1;
+    filter: blur(0);
+  }
+  75% {
+    transform: scale(0.96);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes countdownRipple {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.85;
+    border-color: $neon;
+  }
+  100% {
+    transform: scale(1.65);
+    opacity: 0;
+    border-color: $amber;
+  }
 }
 
 // ============ Bản thu ============

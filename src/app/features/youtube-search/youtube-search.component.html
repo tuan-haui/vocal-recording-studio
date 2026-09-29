@@ -11,8 +11,12 @@
     >
   </form>
   
-  <div *ngIf="isLoading()" style="text-align: center; padding: 10px; color: var(--text-secondary);">Searching...</div>
-  <div *ngIf="error()" style="text-align: center; padding: 10px; color: var(--danger);">{{ error() }}</div>
+  <div *ngIf="isLoading()" style="text-align: center; padding: 10px; color: #a99bc4;">
+    <i class="fa-solid fa-spinner fa-spin"></i> Đang tìm kiếm...
+  </div>
+  <div *ngIf="error()" style="text-align: center; padding: 10px; color: #ff3d8b;">
+    <i class="fa-solid fa-triangle-exclamation"></i> {{ error() }}
+  </div>
   
   <ul class="songs" *ngIf="!isLoading()">
     <li *ngFor="let result of results()">

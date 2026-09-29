@@ -3,8 +3,9 @@
     <div id="youtube-player"></div>
   </div>
   <div class="player__bar">
-    <button class="icon-btn icon-btn--play" type="button" (click)="togglePlay()">
-      {{ playerService.isPlaying() ? '⏸' : '▶' }}
+    <button class="icon-btn icon-btn--play" type="button" (click)="togglePlay()" [attr.aria-label]="playerService.isPlaying() ? 'Tạm dừng' : 'Phát'">
+      <i class="fa-solid fa-pause" *ngIf="playerService.isPlaying()"></i>
+      <i class="fa-solid fa-play" *ngIf="!playerService.isPlaying()" style="margin-left: 2px;"></i>
     </button>
     <span class="time">{{ formatTime(playerService.currentTime()) }}</span>
     <input class="range" type="range" 
@@ -13,11 +14,23 @@
       [value]="playerService.currentTime()" 
       (input)="onSeek($event)">
     <span class="time">{{ formatTime(playerService.duration()) }}</span>
-    <input class="range range--volume" type="range" 
-      [min]="0" 
-      [max]="100" 
-      [value]="playerService.volume()" 
-      (input)="onVolumeChange($event)">
+    <div style="display: inline-flex; align-items: center; gap: 8px;">
+      <i class="fa-solid" 
+         [class.fa-volume-high]="playerService.volume() > 50" 
+         [class.fa-volume-low]="playerService.volume() > 0 && playerService.volume() <= 50" 
+         [class.fa-volume-xmark]="playerService.volume() === 0" 
+         (click)="toggleMute()" 
+         style="cursor: pointer; opacity: 0.8; font-size: 0.9rem;"
+         title="Bật/Tắt âm lượng"></i>
+      <input class="range range--volume" type="range" 
+        [min]="0" 
+        [max]="100" 
+        [value]="playerService.volume()" 
+        (input)="onVolumeChange($event)">
+    </div>
   </div>
-  <p class="player__now" *ngIf="currentSong"><span>Đang phát</span> {{ currentSong.title }}</p>
+  <p class="player__now" *ngIf="currentSong">
+    <i class="fa-solid fa-music" style="margin-right: 6px; color: #ffb547;"></i>
+    <span>Đang phát</span> {{ currentSong.title }}
+  </p>
 </section>

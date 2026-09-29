@@ -24,7 +24,7 @@ export class CurrentTakeComponent {
     if (!take?.objectUrl) return;
 
     if (!this.loaded) {
-      this.audioPlayer.load(take.objectUrl);
+      this.audioPlayer.load(take.objectUrl, take.duration);
       this.loaded = true;
     }
     
@@ -67,6 +67,7 @@ export class CurrentTakeComponent {
   }
 
   formatTime(seconds: number): string {
+    if (!isFinite(seconds) || isNaN(seconds) || seconds < 0) return '0:00';
     const m = Math.floor(seconds / 60);
     const s = Math.floor(seconds % 60);
     return `${m}:${s < 10 ? '0' : ''}${s}`;

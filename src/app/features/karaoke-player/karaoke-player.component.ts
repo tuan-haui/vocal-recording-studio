@@ -72,6 +72,7 @@ export class KaraokePlayerComponent implements AfterViewInit, OnDestroy {
   }
 
   formatTime(seconds: number): string {
+    if (!isFinite(seconds) || isNaN(seconds) || seconds < 0) return '0:00';
     const m = Math.floor(seconds / 60);
     const s = Math.floor(seconds % 60);
     return `${m}:${s < 10 ? '0' : ''}${s}`;

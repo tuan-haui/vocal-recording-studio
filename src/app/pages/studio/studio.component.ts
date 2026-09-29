@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { YouTubeSearchComponent } from '../../features/youtube-search/youtube-search.component';
 import { KaraokePlayerComponent } from '../../features/karaoke-player/karaoke-player.component';
 import { RecorderComponent } from '../../features/recorder/recorder.component';
-import { WaveformComponent } from '../../features/waveform/waveform.component';
 import { CurrentTakeComponent } from '../../features/current-take/current-take.component';
 import { SongChangeGuardComponent, GuardAction } from '../../features/song-change-guard/song-change-guard.component';
 import { Song } from '../../core/models';
@@ -18,7 +17,6 @@ import { AudioRecorderService } from '../../core/services/audio-recorder.service
     YouTubeSearchComponent, 
     KaraokePlayerComponent, 
     RecorderComponent, 
-    WaveformComponent,
     CurrentTakeComponent,
     SongChangeGuardComponent
   ],
