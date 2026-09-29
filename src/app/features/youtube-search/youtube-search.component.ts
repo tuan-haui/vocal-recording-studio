@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Subject, Subscription, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, tap, catchError } from 'rxjs/operators';
 import { YoutubeService } from '../../core/services/youtube.service';
+import { FavoritesService } from '../../core/services/favorites.service';
 import { Song } from '../../core/models';
 
 @Component({
@@ -15,12 +16,24 @@ import { Song } from '../../core/models';
 })
 export class YouTubeSearchComponent implements OnDestroy {
   @Input() isOpen = false;
+  @Input() set currentVideoId(id: string | null | undefined) {
+    if (id !== undefined) {
+      this.selectedVideoId.set(id);
+      setTimeout(() => {
+        const activeElem = document.querySelector('.song.is-active');
+        if (activeElem) {
+          activeElem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }, 50);
+    }
+  }
   @Output() closeLibrary = new EventEmitter<void>();
   @Output() songSelected = new EventEmitter<Song>();
 
   private youtubeService = inject(YoutubeService);
+  favoritesService = inject(FavoritesService);
 
-  activeTab = signal<'youtube' | 'local'>('youtube');
+  activeTab = signal<'youtube' | 'local' | 'favorites'>('youtube');
   localTracks = signal<Song[]>([]);
 
   searchQuery = signal('');

@@ -1,8 +1,8 @@
-import { Component, Input, inject, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, OnDestroy, AfterViewInit, signal, computed, effect, ViewChildren, QueryList, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Song } from '../../core/models';
-import { YoutubePlayerService } from '../../core/services/youtube-player.service';
+import { YoutubePlayerService, FavoritesService } from '../../core/services';
 
 @Component({
   selector: 'app-karaoke-player',
@@ -12,6 +12,8 @@ import { YoutubePlayerService } from '../../core/services/youtube-player.service
   styleUrls: ['./karaoke-player.component.scss']
 })
 export class KaraokePlayerComponent implements AfterViewInit, OnDestroy {
+  @ViewChildren('localMediaElement') localMediaElements!: QueryList<ElementRef<HTMLMediaElement>>;
+
   @Input() set currentSong(song: Song | null) {
     this._currentSong = song;
     if (song) {
@@ -20,6 +22,7 @@ export class KaraokePlayerComponent implements AfterViewInit, OnDestroy {
       } else if (song.videoId) {
         this.loadSong(song.videoId);
       }
+      this.playerService.updateMediaSession(song.title, song.channelTitle, song.thumbnailUrl);
     }
   }
 
@@ -27,14 +30,42 @@ export class KaraokePlayerComponent implements AfterViewInit, OnDestroy {
     return this._currentSong;
   }
 
+  @Output() songChanged = new EventEmitter<Song>();
+
   private _currentSong: Song | null = null;
   private playerInitialized = false;
   private savedVolume = 100;
 
   playerService = inject(YoutubePlayerService);
+  favoritesService = inject(FavoritesService);
+
+  isFavorite = computed(() => {
+    const song = this._currentSong;
+    return song ? this.favoritesService.isFavorite(song.videoId) : false;
+  });
+
+  autoplay = signal<boolean>(true);
+
+  constructor() {
+    // Tự động chuyển bài khi kết thúc nếu bật chế độ phát liên tục
+    effect(() => {
+      const endedCount = this.playerService.trackEnded();
+      if (endedCount > 0 && this.autoplay() && this._currentSong) {
+        this.playNext();
+      }
+    });
+  }
 
   ngAfterViewInit() {
-    // Player will be initialized when first song is selected
+    this.localMediaElements.changes.subscribe((comps: QueryList<ElementRef<HTMLMediaElement>>) => {
+      if (comps.length > 0) {
+        this.playerService.setLocalMediaElement(comps.first.nativeElement);
+      }
+    });
+    // Check initially in case it rendered immediately
+    if (this.localMediaElements && this.localMediaElements.length > 0) {
+      this.playerService.setLocalMediaElement(this.localMediaElements.first.nativeElement);
+    }
   }
 
   ngOnDestroy() {
@@ -43,17 +74,41 @@ export class KaraokePlayerComponent implements AfterViewInit, OnDestroy {
 
   loadSong(videoId: string) {
     if (!this.playerInitialized) {
-      // First time: create player with the video
       this.playerService.initPlayer('youtube-player', videoId);
       this.playerInitialized = true;
     } else {
-      // Subsequent times: just load new video
       this.playerService.loadVideo(videoId);
     }
   }
 
   togglePlay() {
     this.playerService.togglePlay();
+  }
+
+  toggleFavorite(): void {
+    if (this._currentSong) {
+      this.favoritesService.toggleFavorite(this._currentSong);
+    }
+  }
+
+  toggleAutoplay(): void {
+    this.autoplay.set(!this.autoplay());
+  }
+
+  playNext(): void {
+    if (!this._currentSong) return;
+    const nextSong = this.favoritesService.getNextSong(this._currentSong.videoId);
+    if (nextSong) {
+      this.songChanged.emit(nextSong);
+    }
+  }
+
+  playPrevious(): void {
+    if (!this._currentSong) return;
+    const prevSong = this.favoritesService.getPreviousSong(this._currentSong.videoId);
+    if (prevSong) {
+      this.songChanged.emit(prevSong);
+    }
   }
 
   toggleMute(): void {

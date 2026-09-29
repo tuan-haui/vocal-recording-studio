@@ -12,12 +12,13 @@
 <div class="layout">
   <app-youtube-search 
     [isOpen]="isLibraryOpen()" 
+    [currentVideoId]="currentSong()?.videoId"
     (closeLibrary)="isLibraryOpen.set(false)"
     (songSelected)="onSongSelected($event)">
   </app-youtube-search>
 
   <main class="stage">
-    <app-karaoke-player [currentSong]="currentSong()"></app-karaoke-player>
+    <app-karaoke-player [currentSong]="currentSong()" (songChanged)="onSongSelected($event)"></app-karaoke-player>
     <app-recorder></app-recorder>
     <app-current-take></app-current-take>
   </main>

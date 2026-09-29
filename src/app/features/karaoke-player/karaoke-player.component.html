@@ -6,13 +6,15 @@
     <!-- Local Media Screen (Beat tải từ máy tính) -->
     <div class="local-screen" *ngIf="playerService.currentSource() === 'local' && currentSong">
       <!-- Local Video -->
-      <video *ngIf="currentSong.mediaType === 'video'" 
+      <video #localMediaElement
+             *ngIf="currentSong.mediaType === 'video'" 
              class="local-video" 
              [src]="currentSong.localUrl" 
              playsinline></video>
 
       <!-- Local Audio: Studio Vinyl Disc Art -->
       <div class="vinyl-stage" *ngIf="currentSong.mediaType !== 'video'">
+        <audio #localMediaElement [src]="currentSong.localUrl"></audio>
         <div class="vinyl-disc" [class.is-spinning]="playerService.isPlaying()">
           <div class="vinyl-groove"></div>
           <div class="vinyl-label">
@@ -34,10 +36,19 @@
   </div>
 
   <div class="player__bar">
-    <button class="icon-btn icon-btn--play" type="button" (click)="togglePlay()" [attr.aria-label]="playerService.isPlaying() ? 'Tạm dừng' : 'Phát'">
-      <i class="fa-solid fa-pause" *ngIf="playerService.isPlaying()"></i>
-      <i class="fa-solid fa-play" *ngIf="!playerService.isPlaying()" style="margin-left: 2px;"></i>
-    </button>
+    <div style="display: inline-flex; align-items: center; gap: 8px;">
+      <button class="icon-btn icon-btn--step" type="button" (click)="playPrevious()" title="Bài trước" [disabled]="!currentSong">
+        <i class="fa-solid fa-backward-step"></i>
+      </button>
+      <button class="icon-btn icon-btn--play" type="button" (click)="togglePlay()" [attr.aria-label]="playerService.isPlaying() ? 'Tạm dừng' : 'Phát'">
+        <i class="fa-solid fa-pause" *ngIf="playerService.isPlaying()"></i>
+        <i class="fa-solid fa-play" *ngIf="!playerService.isPlaying()" style="margin-left: 2px;"></i>
+      </button>
+      <button class="icon-btn icon-btn--step" type="button" (click)="playNext()" title="Bài tiếp theo" [disabled]="!currentSong">
+        <i class="fa-solid fa-forward-step"></i>
+      </button>
+    </div>
+
     <span class="time">{{ formatTime(playerService.currentTime()) }}</span>
     <input class="range" type="range" 
       [min]="0" 
@@ -45,7 +56,25 @@
       [value]="playerService.currentTime()" 
       (input)="onSeek($event)">
     <span class="time">{{ formatTime(playerService.duration()) }}</span>
+
     <div style="display: inline-flex; align-items: center; gap: 8px;">
+      <!-- Nút yêu thích bài hát -->
+      <button class="icon-btn icon-btn--fav" type="button" 
+              [class.is-fav]="isFavorite()" 
+              (click)="toggleFavorite()" 
+              [disabled]="!currentSong" 
+              [title]="isFavorite() ? 'Đã yêu thích (Bấm để bỏ)' : 'Thêm vào danh sách yêu thích'">
+        <i class="fa-solid fa-heart"></i>
+      </button>
+
+      <!-- Nút bật/tắt tự động chuyển bài -->
+      <button class="icon-btn icon-btn--autoplay" type="button" 
+              [class.is-active]="autoplay()" 
+              (click)="toggleAutoplay()" 
+              [title]="autoplay() ? 'Tự chuyển bài tiếp theo: BẬT' : 'Tự chuyển bài tiếp theo: TẮT'">
+        <i class="fa-solid fa-repeat"></i>
+      </button>
+
       <i class="fa-solid" 
          [class.fa-volume-high]="playerService.volume() > 50" 
          [class.fa-volume-low]="playerService.volume() > 0 && playerService.volume() <= 50" 
@@ -62,7 +91,8 @@
   </div>
 
   <p class="player__now" *ngIf="currentSong">
-    <i class="fa-solid" [class.fa-youtube]="currentSong.source !== 'local'" [class.fa-file-audio]="currentSong.source === 'local'" style="margin-right: 6px; color: #ffb547;"></i>
+    <i *ngIf="currentSong.source !== 'local'" class="fa-brands fa-youtube" style="margin-right: 8px; color: #ff3d8b; font-size: 1.05rem;"></i>
+    <i *ngIf="currentSong.source === 'local'" class="fa-solid fa-file-audio" style="margin-right: 8px; color: #3ee6c4; font-size: 1.05rem;"></i>
     <span>Đang phát:</span> {{ currentSong.title }}
   </p>
 </section>

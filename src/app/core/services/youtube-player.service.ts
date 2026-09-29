@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy, signal, computed } from '@angular/core';
+import { Injectable, OnDestroy, signal, computed, NgZone, inject } from '@angular/core';
 
 declare var YT: any;
 declare global {
@@ -11,6 +11,8 @@ declare global {
   providedIn: 'root'
 })
 export class YoutubePlayerService implements OnDestroy {
+  private zone = inject(NgZone);
+
   // Source mode: 'youtube' hoặc 'local'
   currentSource = signal<'youtube' | 'local'>('youtube');
   localMediaUrl = signal<string>('');
@@ -21,6 +23,7 @@ export class YoutubePlayerService implements OnDestroy {
   currentTime = signal<number>(0);
   duration = signal<number>(0);
   volume = signal<number>(100);
+  trackEnded = signal<number>(0);
   
   isPlaying = computed(() => this.playerState() === 1);
 
@@ -34,25 +37,38 @@ export class YoutubePlayerService implements OnDestroy {
       return;
     }
 
+    this.currentSource.set('youtube');
+    
+    if (this.localMedia) {
+      this.localMedia.pause();
+    }
+
     this.player = new YT.Player(elementId, {
       videoId,
       events: {
         onReady: (event: any) => {
-          this.playerReady.set(true);
-          if (this.currentSource() === 'youtube') {
-            this.duration.set(this.player.getDuration());
-            this.volume.set(this.player.getVolume());
-          }
+          this.zone.run(() => {
+            this.playerReady.set(true);
+            if (this.currentSource() === 'youtube') {
+              this.duration.set(this.player.getDuration());
+              this.volume.set(this.player.getVolume());
+            }
+          });
         },
         onStateChange: (event: any) => {
-          if (this.currentSource() === 'youtube') {
-            this.playerState.set(event.data);
-            if (event.data === 1) { // Playing state
-              this.startTimeUpdate();
-            } else {
-              this.stopTimeUpdate();
+          this.zone.run(() => {
+            if (this.currentSource() === 'youtube') {
+              this.playerState.set(event.data);
+              if (event.data === 1) { // Playing state
+                this.startTimeUpdate();
+              } else {
+                this.stopTimeUpdate();
+              }
+              if (event.data === 0) { // Video ended
+                this.trackEnded.update(count => count + 1);
+              }
             }
-          }
+          });
         }
       }
     });
@@ -81,15 +97,25 @@ export class YoutubePlayerService implements OnDestroy {
       } catch (e) {}
     }
 
+    // Nếu chuyển bài giữa cùng loại local media (audio->audio hoặc video->video), DOM element có thể được Angular tái sử dụng
+    if (this.localMedia && this.localMedia.tagName.toLowerCase() === type) {
+      if (this.localMedia.src !== url) {
+        this.localMedia.src = url;
+        this.localMedia.play().catch(e => console.warn('Autoplay prevented', e));
+      }
+    }
+  }
+
+  setLocalMediaElement(media: HTMLAudioElement | HTMLVideoElement): void {
+    if (this.localMedia === media) return;
+
     // Dọn dẹp local media cũ
     if (this.localMedia) {
       this.localMedia.pause();
       this.localMedia.src = '';
-      this.localMedia = null;
     }
 
-    this.localMedia = type === 'video' ? document.createElement('video') : new Audio();
-    this.localMedia.src = url;
+    this.localMedia = media;
     this.localMedia.volume = this.volume() / 100;
 
     this.localMedia.addEventListener('loadedmetadata', () => {
@@ -121,8 +147,35 @@ export class YoutubePlayerService implements OnDestroy {
       if (this.currentSource() === 'local') {
         this.playerState.set(0);
         this.currentTime.set(0);
+        this.trackEnded.update(count => count + 1);
       }
     });
+    
+    // Tự động phát khi beat được tải vào DOM
+    this.localMedia.play().catch(e => console.warn('Autoplay prevented', e));
+  }
+
+  updateMediaSession(title: string, artist: string, artworkUrl?: string): void {
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: title || 'Vocal Recording Studio',
+        artist: artist || 'Karaoke Studio',
+        album: 'Vocal Studio Playlist',
+        artwork: artworkUrl ? [{ src: artworkUrl, sizes: '512x512', type: 'image/jpeg' }] : []
+      });
+
+      try {
+        navigator.mediaSession.setActionHandler('play', () => this.play());
+        navigator.mediaSession.setActionHandler('pause', () => this.pause());
+        navigator.mediaSession.setActionHandler('seekto', (details) => {
+          if (details.seekTime !== undefined) {
+            this.seekTo(details.seekTime);
+          }
+        });
+      } catch (e) {
+        console.warn('MediaSession handler warning:', e);
+      }
+    }
   }
 
   play(): void {

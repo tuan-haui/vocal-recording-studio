@@ -1,7 +1,7 @@
 <aside class="library" [class.is-open]="isOpen">
   <div class="library__handle" aria-hidden="true" (click)="closeLibrary.emit()"></div>
 
-  <!-- Library Mode Tabs: YouTube vs Beat Máy Tính -->
+  <!-- Library Mode Tabs: YouTube vs Beat Máy Tính vs Yêu Thích -->
   <div class="library-tabs">
     <button type="button" 
             class="library-tab" 
@@ -13,7 +13,14 @@
             class="library-tab" 
             [class.is-active]="activeTab() === 'local'" 
             (click)="activeTab.set('local')">
-      <i class="fa-solid fa-folder-open"></i> Beat từ máy
+      <i class="fa-solid fa-folder-open"></i> Beat máy
+    </button>
+    <button type="button" 
+            class="library-tab" 
+            [class.is-active]="activeTab() === 'favorites'" 
+            (click)="activeTab.set('favorites')">
+      <i class="fa-solid fa-heart" [style.color]="activeTab() === 'favorites' ? '#fff' : '#ff3d8b'"></i> 
+      <span>({{ favoritesService.favorites().length }})</span>
     </button>
   </div>
 
@@ -45,12 +52,18 @@
             <span class="song__title">{{ result.title }}</span>
             <span class="song__channel">{{ result.channelTitle }}</span>
           </span>
+          <span class="song__fav-toggle" 
+                [class.is-fav]="favoritesService.isFavorite(result.videoId)"
+                (click)="$event.stopPropagation(); favoritesService.toggleFavorite(result)"
+                [title]="favoritesService.isFavorite(result.videoId) ? 'Bỏ thích' : 'Thêm vào yêu thích'">
+            <i class="fa-solid fa-heart"></i>
+          </span>
         </button>
       </li>
     </ul>
   </ng-container>
 
-  <!-- TAB 2: LOCAL BEAT FILES (HƯỚNG B) -->
+  <!-- TAB 2: LOCAL BEAT FILES -->
   <ng-container *ngIf="activeTab() === 'local'">
     <input #fileInput type="file" accept="audio/*,video/*" (change)="onFileSelected($event)" style="display: none">
     
@@ -77,6 +90,12 @@
             <span class="song__title">{{ track.title }}</span>
             <span class="song__channel">{{ track.channelTitle }}</span>
           </span>
+          <span class="song__fav-toggle" 
+                [class.is-fav]="favoritesService.isFavorite(track.videoId)"
+                (click)="$event.stopPropagation(); favoritesService.toggleFavorite(track)"
+                [title]="favoritesService.isFavorite(track.videoId) ? 'Bỏ thích' : 'Thêm vào yêu thích'">
+            <i class="fa-solid fa-heart"></i>
+          </span>
         </button>
       </li>
     </ul>
@@ -85,6 +104,39 @@
       <i class="fa-solid fa-folder-open" style="font-size: 1.8rem; color: #a99bc4; margin-bottom: 8px; opacity: 0.5;"></i>
       <p class="empty__title">Chưa có beat nào</p>
       <p class="empty__hint">Nhấn vào ô trên để tải beat nhạc từ thiết bị của bạn.</p>
+    </div>
+  </ng-container>
+
+  <!-- TAB 3: FAVORITES PLAYLIST (CHẾ ĐỘ NGHE NHẠC) -->
+  <ng-container *ngIf="activeTab() === 'favorites'">
+    <div class="local-header" *ngIf="favoritesService.favorites().length > 0" style="padding: 6px 4px 10px; font-size: 0.85rem; color: #a99bc4; font-weight: 600;">
+      <span><i class="fa-solid fa-headphones" style="color: #ff3d8b; margin-right: 4px;"></i> Playlist yêu thích ({{ favoritesService.favorites().length }})</span>
+    </div>
+
+    <ul class="songs" *ngIf="favoritesService.favorites().length > 0">
+      <li *ngFor="let song of favoritesService.favorites()">
+        <button class="song" [class.is-active]="song.videoId === selectedVideoId()" type="button" (click)="selectSong(song)">
+          <span class="song__thumb" *ngIf="song.thumbnailUrl" style="background-image: url('{{song.thumbnailUrl}}'); background-size: cover; background-position: center;"></span>
+          <span class="song__thumb song__thumb--local" *ngIf="!song.thumbnailUrl">
+            <i class="fa-solid fa-music"></i>
+          </span>
+          <span class="song__meta">
+            <span class="song__title">{{ song.title }}</span>
+            <span class="song__channel">{{ song.channelTitle }}</span>
+          </span>
+          <span class="song__fav-toggle is-fav" 
+                (click)="$event.stopPropagation(); favoritesService.removeFavorite(song.videoId)"
+                title="Xóa khỏi yêu thích">
+            <i class="fa-solid fa-xmark"></i>
+          </span>
+        </button>
+      </li>
+    </ul>
+
+    <div class="empty" *ngIf="favoritesService.favorites().length === 0" style="padding: 28px 14px; margin-top: 10px;">
+      <i class="fa-solid fa-heart" style="font-size: 2rem; color: #ff3d8b; margin-bottom: 8px; opacity: 0.5;"></i>
+      <p class="empty__title">Danh sách yêu thích trống</p>
+      <p class="empty__hint">Nhấn biểu tượng trái tim (❤️) trên bất kỳ bài hát nào để lưu vào đây nghe bất cứ lúc nào!</p>
     </div>
   </ng-container>
 </aside>
