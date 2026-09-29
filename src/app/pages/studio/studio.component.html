@@ -3,6 +3,25 @@
     <span class="brand__mark" aria-hidden="true"></span>
     Nutiz Musicbox
   </a>
+
+  <!-- Mobile toggle -->
+  <button class="mobile-tabs-trigger" (click)="openLibrary('youtube')">
+    <i class="fa-solid fa-search"></i>
+  </button>
+
+  <!-- Desktop tabs -->
+  <div class="topbar-tabs">
+    <button class="topbar-tab" (click)="openLibrary('youtube')">
+      <i class="fa-brands fa-youtube" style="color: #ff3d8b;"></i> YouTube
+    </button>
+    <button class="topbar-tab" (click)="openLibrary('local')">
+      <i class="fa-solid fa-folder-open" style="color: #3ee6c4;"></i> Beat máy
+    </button>
+    <button class="topbar-tab" (click)="openLibrary('favorites')">
+      <i class="fa-solid fa-heart" style="color: #ffb547;"></i> Yêu thích
+    </button>
+  </div>
+
   <span class="status" [class.status--live]="recorderService.hasPermission()">
     <i class="fa-solid" [class.fa-microphone]="recorderService.hasPermission()" [class.fa-microphone-slash]="!recorderService.hasPermission()"></i>
     {{ recorderService.hasPermission() ? 'Mic đã kết nối' : 'Chưa cấp quyền mic' }}
@@ -10,13 +29,6 @@
 </header>
 
 <div class="layout">
-  <app-youtube-search 
-    [isOpen]="isLibraryOpen()" 
-    [currentVideoId]="currentSong()?.videoId"
-    (closeLibrary)="isLibraryOpen.set(false)"
-    (songSelected)="onSongSelected($event)">
-  </app-youtube-search>
-
   <main class="stage">
     <app-karaoke-player [currentSong]="currentSong()" (songChanged)="onSongSelected($event)"></app-karaoke-player>
     <app-recorder></app-recorder>
@@ -24,9 +36,16 @@
   </main>
 </div>
 
-<button class="library-toggle" id="libraryToggle" (click)="toggleLibrary()">
-  <i class="fa-solid fa-music"></i> Chọn bài
-</button>
+<!-- Modal Library -->
+<div class="library-modal-overlay" *ngIf="isLibraryOpen()" (click)="closeLibraryOnBackdrop($event)">
+  <app-youtube-search 
+    [initialTab]="activeLibraryTab()"
+    [currentVideoId]="currentSong()?.videoId"
+    (closeLibrary)="isLibraryOpen.set(false)"
+    (songSelected)="onSongSelected($event)"
+    (expandFavorites)="onExpandFavorites()">
+  </app-youtube-search>
+</div>
 
 <app-song-change-guard 
   *ngIf="showGuard()" 

@@ -1,4 +1,4 @@
-<aside class="library" [class.is-open]="isOpen">
+<aside class="library">
   <div class="library__handle" aria-hidden="true" (click)="closeLibrary.emit()"></div>
 
   <!-- Library Mode Tabs: YouTube vs Beat Máy Tính vs Yêu Thích -->
@@ -109,8 +109,11 @@
 
   <!-- TAB 3: FAVORITES PLAYLIST (CHẾ ĐỘ NGHE NHẠC) -->
   <ng-container *ngIf="activeTab() === 'favorites'">
-    <div class="local-header" *ngIf="favoritesService.favorites().length > 0" style="padding: 6px 4px 10px; font-size: 0.85rem; color: #a99bc4; font-weight: 600;">
+    <div class="local-header" *ngIf="favoritesService.favorites().length > 0" style="display: flex; align-items: center; justify-content: space-between; padding: 6px 4px 10px; font-size: 0.85rem; color: #a99bc4; font-weight: 600;">
       <span><i class="fa-solid fa-headphones" style="color: #ff3d8b; margin-right: 4px;"></i> Playlist yêu thích ({{ favoritesService.favorites().length }})</span>
+      <button class="expand-btn" (click)="expandFavorites.emit()" style="background: rgba(255, 61, 139, 0.15); border: 1px solid rgba(255, 61, 139, 0.3); color: #ff3d8b; padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; cursor: pointer; transition: all 0.2s;">
+        <i class="fa-solid fa-expand"></i> Mở rộng
+      </button>
     </div>
 
     <ul class="songs" *ngIf="favoritesService.favorites().length > 0">

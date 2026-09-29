@@ -1,5 +1,6 @@
 import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { YouTubeSearchComponent } from '../../features/youtube-search/youtube-search.component';
 import { KaraokePlayerComponent } from '../../features/karaoke-player/karaoke-player.component';
 import { RecorderComponent } from '../../features/recorder/recorder.component';
@@ -27,14 +28,27 @@ export class StudioComponent {
   currentSong = signal<Song | null>(null);
   showGuard = signal<boolean>(false);
   isLibraryOpen = signal(false);
+  activeLibraryTab = signal<'youtube' | 'local' | 'favorites'>('youtube');
   
   sessionService = inject(RecordingSessionService);
   recorderService = inject(AudioRecorderService);
+  router = inject(Router);
   
   private pendingSong: Song | null = null;
 
-  toggleLibrary(): void {
-    this.isLibraryOpen.set(!this.isLibraryOpen());
+  openLibrary(tab: 'youtube' | 'local' | 'favorites'): void {
+    this.activeLibraryTab.set(tab);
+    this.isLibraryOpen.set(true);
+  }
+
+  closeLibraryOnBackdrop(event: MouseEvent): void {
+    if ((event.target as HTMLElement).classList.contains('library-modal-overlay')) {
+      this.isLibraryOpen.set(false);
+    }
+  }
+
+  onExpandFavorites(): void {
+    this.router.navigate(['/listen']);
   }
 
 

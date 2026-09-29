@@ -74,45 +74,79 @@ h2 { margin: 0; font-size: 1rem; font-weight: 600; }
 
 // ============ Layout ============
 .layout {
-  display: grid;
-  grid-template-columns: 340px minmax(0, 1fr);
-  gap: clamp(16px, 2.5vw, 32px);
-  max-width: 1280px;
+  display: flex;
+  flex-direction: column;
+  max-width: 900px;
   margin: 0 auto;
   padding: clamp(16px, 3vw, 32px);
-
-  @include down($bp-tablet) { grid-template-columns: 1fr; padding-bottom: 96px; }
+  padding-bottom: 96px;
 }
 
 .stage { display: grid; gap: 20px; align-content: start; min-width: 0; }
 
-// ============ Thư viện bài hát ============
-.library {
-  position: sticky; top: 76px;
-  align-self: start;
-  max-height: calc(100dvh - 100px);
-  display: flex; flex-direction: column; gap: 14px;
+// ============ Topbar Tabs ============
+.topbar-tabs {
+  display: flex;
+  gap: 8px;
+  background: rgba(#000, 0.25);
+  padding: 4px 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(#fff, 0.08);
+  margin: 0 12px;
+
+  @include down($bp-tablet) { display: none; }
+
+  .topbar-tab {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 14px; border: none; border-radius: 999px;
+    background: transparent; color: $ink-dim;
+    font-size: 0.85rem; font-weight: 600;
+    transition: all 0.2s ease;
+
+    &:hover { color: $ink; background: rgba(#fff, 0.06); }
+    i { font-size: 1.05rem; }
+  }
+}
+
+// Mobile specific topbar tabs trigger
+.mobile-tabs-trigger {
+  display: none;
+  @include down($bp-tablet) {
+    display: flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: rgba(#fff, 0.1); border: none; color: $ink;
+  }
+}
+
+// ============ Thư viện bài hát (Modal) ============
+.library-modal-overlay {
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba($plum-900, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
   padding: 16px;
-  background: rgba($plum-800, .7);
-  border: 1px solid rgba(#fff, .07);
+  animation: fadeIn 0.2s;
+}
+
+.library {
+  width: 100%; max-width: 560px;
+  max-height: calc(100dvh - 32px);
+  display: flex; flex-direction: column; gap: 14px;
+  padding: 20px;
+  background: rgba($plum-800, 0.95);
+  border: 1px solid rgba(#fff, .1);
   border-radius: $radius-lg;
+  box-shadow: 0 24px 60px rgba(#000, 0.6), 0 0 40px rgba($neon, 0.1);
+  animation: modalSlideIn 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  overflow: hidden;
 
   &__handle { display: none; }
+}
 
-  // Mobile: bottom sheet
-  @include down($bp-tablet) {
-    position: fixed; inset: auto 0 0 0; top: auto; z-index: 30;
-    max-height: 72dvh;
-    border-radius: $radius-lg $radius-lg 0 0;
-    background: $plum-800;
-    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-    transform: translateY(105%);
-    transition: transform .28s cubic-bezier(.2, .8, .2, 1);
-    box-shadow: 0 -20px 60px rgba(#000, .5);
-
-    &.is-open { transform: none; }
-    &__handle { display: block; width: 40px; height: 4px; margin: -4px auto 0; border-radius: 4px; background: rgba(#fff, .2); }
-  }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes modalSlideIn {
+  from { opacity: 0; transform: translateY(30px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 // ============ Library Tabs & Upload ============

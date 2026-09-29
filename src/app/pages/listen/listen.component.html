@@ -1,0 +1,45 @@
+<header class="topbar">
+  <button class="back-btn" (click)="goBack()">
+    <i class="fa-solid fa-arrow-left"></i> Quay lại
+  </button>
+  <span class="brand">
+    <i class="fa-solid fa-headphones" style="color: #ff3d8b; margin-right: 8px;"></i> Nghe nhạc
+  </span>
+</header>
+
+<div class="listen-layout">
+  <main class="player-area">
+    <app-karaoke-player [currentSong]="currentSong()" (songChanged)="onSongSelected($event)"></app-karaoke-player>
+  </main>
+
+  <aside class="playlist-sidebar">
+    <div class="sidebar-header">
+      <h3><i class="fa-solid fa-heart" style="color: #ff3d8b;"></i> Playlist của bạn</h3>
+      <span class="count">{{ favoritesService.favorites().length }} bài</span>
+    </div>
+
+    <ul class="songs">
+      <li *ngFor="let song of favoritesService.favorites()">
+        <button class="song" [class.is-active]="song.videoId === currentSong()?.videoId" (click)="onSongSelected(song)">
+          <span class="song__thumb" *ngIf="song.thumbnailUrl" style="background-image: url('{{song.thumbnailUrl}}'); background-size: cover; background-position: center;"></span>
+          <span class="song__thumb song__thumb--local" *ngIf="!song.thumbnailUrl">
+            <i class="fa-solid fa-music"></i>
+          </span>
+          <span class="song__meta">
+            <span class="song__title">{{ song.title }}</span>
+            <span class="song__channel">{{ song.channelTitle }}</span>
+          </span>
+          <span class="playing-indicator" *ngIf="song.videoId === currentSong()?.videoId">
+            <i class="fa-solid fa-volume-high"></i>
+          </span>
+        </button>
+      </li>
+    </ul>
+
+    <div class="empty" *ngIf="favoritesService.favorites().length === 0">
+      <i class="fa-solid fa-heart-crack" style="font-size: 2rem; color: #a99bc4; margin-bottom: 8px; opacity: 0.5;"></i>
+      <p class="empty__title">Chưa có bài hát nào</p>
+      <p class="empty__hint">Hãy quay lại Studio và thả tim cho các bài hát để tạo playlist nhé!</p>
+    </div>
+  </aside>
+</div>

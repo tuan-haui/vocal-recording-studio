@@ -15,7 +15,9 @@ import { Song } from '../../core/models';
   styleUrls: ['./youtube-search.component.scss']
 })
 export class YouTubeSearchComponent implements OnDestroy {
-  @Input() isOpen = false;
+  @Input() set initialTab(tab: 'youtube' | 'local' | 'favorites') {
+    this.activeTab.set(tab);
+  }
   @Input() set currentVideoId(id: string | null | undefined) {
     if (id !== undefined) {
       this.selectedVideoId.set(id);
@@ -29,6 +31,7 @@ export class YouTubeSearchComponent implements OnDestroy {
   }
   @Output() closeLibrary = new EventEmitter<void>();
   @Output() songSelected = new EventEmitter<Song>();
+  @Output() expandFavorites = new EventEmitter<void>();
 
   private youtubeService = inject(YoutubeService);
   favoritesService = inject(FavoritesService);
