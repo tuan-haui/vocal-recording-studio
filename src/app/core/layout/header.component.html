@@ -1,0 +1,39 @@
+<header class="topbar">
+  <a class="brand" routerLink="/">
+    <img src="/favicon.ico" class="brand__icon" alt="Logo" width="24" height="24">
+    {{ 'APP_NAME' | translate }}
+  </a>
+
+  <!-- Mobile toggle -->
+  <button class="mobile-tabs-trigger" (click)="goToStudio('youtube')">
+    <i class="fa-solid fa-search"></i>
+  </button>
+
+  <!-- Desktop tabs -->
+  <div class="topbar-tabs">
+    <button class="topbar-tab" [class.is-active]="activeTab === 'youtube'" (click)="goToStudio('youtube')">
+      <i class="fa-brands fa-youtube" [style.color]="activeTab === 'youtube' ? '' : '#ff3d8b'"></i> {{ 'YOUTUBE_TAB' | translate }}
+    </button>
+    <button class="topbar-tab" [class.is-active]="activeTab === 'local'" (click)="goToStudio('local')">
+      <i class="fa-solid fa-folder-open" [style.color]="activeTab === 'local' ? '' : '#3ee6c4'"></i> {{ 'LOCAL_TAB' | translate }}
+    </button>
+    <button class="topbar-tab" [class.is-active]="activeTab === 'favorites'" (click)="goToStudio('favorites')">
+      <i class="fa-solid fa-heart" [style.color]="activeTab === 'favorites' ? '' : '#ffb547'"></i> {{ 'FAVORITES_TAB' | translate }}
+    </button>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 12px;">
+    <app-theme-toggle></app-theme-toggle>
+    <app-language-select></app-language-select>
+    
+    <span class="status status--live" *ngIf="isListenMode">
+      <i class="fa-solid fa-headphones"></i>
+      {{ 'LISTEN_MODE' | translate }}
+    </span>
+    
+    <span class="status" [class.status--live]="recorderService.hasPermission()" *ngIf="!isListenMode">
+      <i class="fa-solid" [class.fa-microphone]="recorderService.hasPermission()" [class.fa-microphone-slash]="!recorderService.hasPermission()"></i>
+      {{ recorderService.hasPermission() ? ('MIC_CONNECTED' | translate) : ('MIC_DISCONNECTED' | translate) }}
+    </span>
+  </div>
+</header>

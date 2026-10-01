@@ -1,5 +1,11 @@
 :host { display: contents; }
 
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
+
 .karaoke-toggle-text {
   color: #a99bc4; /* Dark mode default */
 }

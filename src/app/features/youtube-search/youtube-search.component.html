@@ -1,28 +1,7 @@
 <aside class="library">
   <div class="library__handle" aria-hidden="true" (click)="closeLibrary.emit()"></div>
 
-  <!-- Library Mode Tabs: YouTube vs Beat Máy Tính vs Yêu Thích -->
-  <div class="library-tabs">
-    <button type="button" 
-            class="library-tab" 
-            [class.is-active]="activeTab() === 'youtube'" 
-            (click)="activeTab.set('youtube')">
-      <i class="fa-brands fa-youtube"></i> {{ 'YOUTUBE_TAB' | translate }}
-    </button>
-    <button type="button" 
-            class="library-tab" 
-            [class.is-active]="activeTab() === 'local'" 
-            (click)="activeTab.set('local')">
-      <i class="fa-solid fa-folder-open"></i> {{ 'LOCAL_TAB' | translate }}
-    </button>
-    <button type="button" 
-            class="library-tab" 
-            [class.is-active]="activeTab() === 'favorites'" 
-            (click)="activeTab.set('favorites')">
-      <i class="fa-solid fa-heart" [style.color]="activeTab() === 'favorites' ? '#fff' : '#ff3d8b'"></i> 
-      <span>({{ favoritesService.favorites().length }})</span>
-    </button>
-  </div>
+
 
   <!-- TAB 1: YOUTUBE SEARCH -->
   <ng-container *ngIf="activeTab() === 'youtube'">
@@ -34,8 +13,16 @@
         [ngModel]="searchQuery()" 
         (ngModelChange)="onSearchChange($event)"
         name="search"
-        style="padding-right: 110px;"
+        style="padding-right: 140px;"
       >
+      <button 
+        type="button" 
+        class="search-clear-btn" 
+        *ngIf="searchQuery()" 
+        (click)="onSearchChange('')" 
+        style="position: absolute; right: 110px; top: 50%; transform: translateY(-50%); background: transparent; border: none; padding: 6px; color: #64748b; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; z-index: 2;">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
       <div class="karaoke-toggle" style="position: absolute; right: 6px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.05); padding: 4px 8px; border-radius: 999px; cursor: pointer;" (click)="toggleKaraokeMode()" [title]="'KARAOKE_TOGGLE_TITLE' | translate">
         <span class="karaoke-toggle-text" style="font-size: 0.75rem; font-weight: 600; transition: color 0.2s;" [class.is-active]="isKaraokeMode()">{{ 'KARAOKE_TOGGLE' | translate }}</span>
         <div class="toggle-switch" style="width: 28px; height: 16px; border-radius: 999px; position: relative; transition: all 0.2s;" [style.background]="isKaraokeMode() ? 'rgba(255, 181, 71, 0.3)' : 'rgba(0,0,0,0.1)'">

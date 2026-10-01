@@ -73,20 +73,22 @@
 /* Light Mode Overrides */
 :host-context(body.light-mode) {
   .take-card {
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    background: #ffffff;
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 
-    h3 { color: #0f172a; }
-    .take-meta { color: #64748b; }
+    h3 { color: #0f172a; font-weight: 700; font-size: 1.1rem; }
+    .take-meta { color: #0f172a; font-weight: 600; margin-bottom: 24px; }
     
     .take-player {
-      background: rgba(0, 0, 0, 0.04);
-      .time { color: #475569; }
+      background: transparent;
+      padding: 0;
+      .time { color: #64748b; font-weight: 600; }
     }
 
     .take-actions {
-      .action-btn--retry { background: rgba(0, 0, 0, 0.05); color: #0f172a; border: 1px solid rgba(0,0,0,0.1); }
+      .action-btn--retry { background: rgba(0, 0, 0, 0.05); color: #0f172a; border: none; box-shadow: none; }
     }
   }
 }

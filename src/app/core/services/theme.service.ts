@@ -43,7 +43,7 @@ export class ThemeService {
     if (saved === 'dark' || saved === 'light' || saved === 'system') {
       return saved as Theme;
     }
-    return 'system';
+    return 'light'; // Default to light mode as per new design
   }
 
   setTheme(theme: Theme) {

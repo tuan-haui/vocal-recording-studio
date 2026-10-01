@@ -35,7 +35,7 @@ import { ThemeToggleComponent } from '../../shared/components/theme-toggle/theme
 export class StudioComponent implements OnInit {
   currentSong = signal<Song | null>(null);
   showGuard = signal<boolean>(false);
-  isLibraryOpen = signal(false);
+  isLibraryOpen = signal<boolean>(typeof window !== 'undefined' ? window.innerWidth > 768 : false);
   activeLibraryTab = signal<'youtube' | 'local' | 'favorites'>('youtube');
   
   sessionService = inject(RecordingSessionService);
@@ -63,8 +63,11 @@ export class StudioComponent implements OnInit {
   }
 
   closeLibraryOnBackdrop(event: MouseEvent): void {
-    if ((event.target as HTMLElement).classList.contains('library-modal-overlay')) {
-      this.isLibraryOpen.set(false);
+    if ((event.target as HTMLElement).classList.contains('sidebar-desktop')) {
+      // Only close on mobile (where it acts as an overlay)
+      if (window.innerWidth < 768) {
+        this.isLibraryOpen.set(false);
+      }
     }
   }
 
