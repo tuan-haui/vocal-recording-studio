@@ -18,13 +18,13 @@
     <div class="rec-status" *ngIf="recorderService.isRecording()">
       <span class="rec-dot"></span> Đang thu âm...
     </div>
-    <button class="settings-btn">
+    <button class="settings-btn" *ngIf="false">
       <i class="fa-solid fa-gear"></i> Cài đặt âm thanh
     </button>
   </div>
 
   <div class="rec-middle">
-    <div class="volume-control">
+    <div class="volume-control" *ngIf="false">
       <div class="volume-label"><i class="fa-solid fa-microphone" style="color: #3ee6c4;"></i> Giọng hát</div>
       <div class="slider-row">
         <input type="range" class="volume-slider pink-slider" value="80" title="Giọng hát">
@@ -39,7 +39,7 @@
       </div>
     </div>
     
-    <div class="volume-control">
+    <div class="volume-control" *ngIf="false">
       <div class="volume-label"><i class="fa-solid fa-music"></i> Âm lượng beat</div>
       <div class="slider-row">
         <input type="range" class="volume-slider pink-slider" value="70" title="Beat">
