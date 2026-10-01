@@ -43,8 +43,14 @@
         </div>
       </div>
     </form>
-    
-    <ul class="songs" *ngIf="isLoading()">
+    <!-- Suggestions -->
+    <div class="search-suggestions" *ngIf="!searchQuery().trim() && !isLoading()">
+      <button type="button" class="suggestion-pill" *ngFor="let suggestion of suggestions" (click)="selectSuggestion(suggestion)">
+        {{ suggestion }}
+      </button>
+    </div>
+
+    <ul class="songs" *ngIf="isLoading()" style="min-height: 350px;">
       <li *ngFor="let i of [1,2,3,4,5]">
         <div class="song skeleton-item" style="pointer-events: none;">
           <div class="skeleton-thumb" style="flex: none; width: 76px; aspect-ratio: 16 / 10; border-radius: 10px; animation: skeleton-pulse 1.5s infinite;"></div>
@@ -59,7 +65,7 @@
       <i class="fa-solid fa-triangle-exclamation"></i> {{ 'SEARCH_ERROR' | translate }}
     </div>
     
-    <ul class="songs" *ngIf="!isLoading()">
+    <ul class="songs" *ngIf="!isLoading()" style="min-height: 350px;">
       <li *ngFor="let result of results()">
         <button class="song" [class.is-active]="result.videoId === selectedVideoId()" type="button" (click)="selectSong(result)">
           <span class="song__thumb" style="background-image: url('{{result.thumbnailUrl}}'); background-size: cover; background-position: center;"></span>

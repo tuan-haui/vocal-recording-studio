@@ -44,8 +44,24 @@ export class YouTubeSearchComponent implements OnDestroy {
   localTracks = signal<Song[]>([]);
 
   searchQuery = signal('');
-  isKaraokeMode = signal(false);
+  isKaraokeMode = signal(true);
   results = signal<Song[]>([]);
+  
+  suggestions = [
+    'Chờ anh nhé - Hoàng Dũng',
+    'Anh sẽ ổn thôi - Vương Anh Tú',
+    'Ôm trọn thương yêu - Rum',
+    'Aloha',
+    'Mơ Hồ - Bùi Anh Tuấn',
+    'Cơn Mưa Tình Yêu - HAT, Phương Linh',
+    'Chân tình - Quốc thiên',
+    'Gói Con Tim Làm Quà'
+  ];
+
+  selectSuggestion(query: string) {
+    this.searchQuery.set(query);
+    this.onSearch();
+  }
   isLoading = signal(false);
   error = signal<string | null>(null);
   selectedVideoId = signal<string | null>(null);
