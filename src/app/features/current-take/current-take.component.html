@@ -31,18 +31,18 @@
       <app-vocal-effects></app-vocal-effects>
     </div>
 
-    <div class="take-actions" style="display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap;">
-      <button class="rec-btn" style="width: auto; padding: 0.6rem 1.4rem; gap: 8px;" (click)="saveTake()">
+    <div class="take-actions" style="margin-top: 16px;">
+      <button class="action-btn action-btn--save" (click)="saveTake()">
         <i class="fa-solid fa-download"></i>
-        <span class="rec-btn__label">Lưu</span>
+        <span>Lưu</span>
       </button>
-      <button class="rec-btn" style="width: auto; padding: 0.6rem 1.4rem; background: rgba(255,255,255,0.1); gap: 8px;" (click)="reRecord()">
+      <button class="action-btn action-btn--retry" (click)="reRecord()">
         <i class="fa-solid fa-rotate-left"></i>
-        <span class="rec-btn__label">Thu lại</span>
+        <span>Thu lại</span>
       </button>
-      <button class="rec-btn" style="width: auto; padding: 0.6rem 1.4rem; background: rgba(255, 61, 139, 0.1); border: 1px solid #ff3d8b; gap: 8px;" (click)="deleteTake()">
-        <i class="fa-solid fa-trash-can" style="color: #ff3d8b;"></i>
-        <span class="rec-btn__label" style="color: #ff3d8b;">Xóa</span>
+      <button class="action-btn action-btn--delete" (click)="deleteTake()">
+        <i class="fa-solid fa-trash-can"></i>
+        <span>Xóa</span>
       </button>
     </div>
   </div>
