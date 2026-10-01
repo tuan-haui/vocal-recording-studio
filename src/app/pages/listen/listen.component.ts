@@ -35,7 +35,7 @@ export class ListenComponent {
     this.currentSong.set(song);
   }
 
-  goBack(): void {
-    this.router.navigate(['/']);
+  goToStudio(tab: string): void {
+    this.router.navigate(['/'], { queryParams: { tab } });
   }
 }

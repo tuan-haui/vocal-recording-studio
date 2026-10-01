@@ -1,14 +1,37 @@
 <header class="topbar">
-  <button class="back-btn" (click)="goBack()">
-    <i class="fa-solid fa-arrow-left"></i> {{ 'BACK' | translate }}
+  <a class="brand" href="/">
+    <img src="/favicon.ico" class="brand__icon" alt="Logo" width="24" height="24">
+    {{ 'APP_NAME' | translate }}
+  </a>
+
+  <!-- Mobile toggle -->
+  <button class="mobile-tabs-trigger" (click)="goToStudio('youtube')">
+    <i class="fa-solid fa-search"></i>
   </button>
-  <div style="display: flex; align-items: center; gap: 16px;">
+
+  <!-- Desktop tabs -->
+  <div class="topbar-tabs">
+    <button class="topbar-tab" (click)="goToStudio('youtube')">
+      <i class="fa-brands fa-youtube" style="color: #ff3d8b;"></i> {{ 'YOUTUBE_TAB' | translate }}
+    </button>
+    <button class="topbar-tab" (click)="goToStudio('local')">
+      <i class="fa-solid fa-folder-open" style="color: #3ee6c4;"></i> {{ 'LOCAL_TAB' | translate }}
+    </button>
+    <button class="topbar-tab" (click)="goToStudio('favorites')">
+      <i class="fa-solid fa-heart" style="color: #ffb547;"></i> {{ 'FAVORITES_TAB' | translate }}
+    </button>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 12px;">
     <!-- Theme Toggle -->
     <app-theme-toggle></app-theme-toggle>
+
     <!-- Language Select -->
     <app-language-select></app-language-select>
-    <span class="brand">
-      <i class="fa-solid fa-headphones" style="color: #ff3d8b; margin-right: 8px;"></i> {{ 'LISTEN_MODE' | translate }}
+    
+    <span class="status status--live">
+      <i class="fa-solid fa-headphones"></i>
+      {{ 'LISTEN_MODE' | translate }}
     </span>
   </div>
 </header>
@@ -49,3 +72,23 @@
     </div>
   </aside>
 </div>
+
+<!-- Mobile Bottom Navigation -->
+<nav class="bottom-nav">
+  <button class="bottom-nav__item" (click)="goToStudio('home')">
+    <i class="fa-solid fa-house"></i>
+    <span>{{ 'HOME' | translate }}</span>
+  </button>
+  <button class="bottom-nav__item" (click)="goToStudio('youtube')">
+    <i class="fa-solid fa-music"></i>
+    <span>{{ 'SONGS' | translate }}</span>
+  </button>
+  <button class="bottom-nav__item" (click)="goToStudio('local')">
+    <i class="fa-solid fa-folder-open"></i>
+    <span>{{ 'LIBRARY' | translate }}</span>
+  </button>
+  <button class="bottom-nav__item is-active">
+    <i class="fa-solid fa-headphones"></i>
+    <span>{{ 'LISTEN_MODE' | translate }}</span>
+  </button>
+</nav>

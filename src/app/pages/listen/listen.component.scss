@@ -10,23 +10,6 @@
   padding: 16px 24px;
 }
 
-.back-btn {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
-  padding: 8px 16px;
-  border-radius: 999px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.2s;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateX(-4px);
-  }
-}
 
 .listen-layout {
   display: grid;
@@ -41,6 +24,7 @@
     grid-template-columns: 1fr;
     height: auto;
     padding: 16px;
+    padding-bottom: 96px;
     gap: 16px;
   }
 }
@@ -105,14 +89,6 @@
 
 /* Light Mode Overrides */
 :host-context(body.light-mode) {
-  .back-btn {
-    background: rgba(0, 0, 0, 0.05);
-    border-color: rgba(0, 0, 0, 0.1);
-    color: #0f172a;
-    &:hover {
-      background: rgba(0, 0, 0, 0.1);
-    }
-  }
 
   .playlist-sidebar {
     background: rgba(255, 255, 255, 0.9);

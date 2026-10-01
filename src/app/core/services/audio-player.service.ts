@@ -1,4 +1,5 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, inject } from '@angular/core';
+import { VocalEffectsService } from './vocal-effects.service';
 
 @Injectable({ providedIn: 'root' })
 export class AudioPlayerService {
@@ -8,10 +9,16 @@ export class AudioPlayerService {
   
   private audio: HTMLAudioElement | null = null;
   private timeUpdateInterval: any = null;
+  
+  private vocalEffectsService = inject(VocalEffectsService);
 
   load(objectUrl: string, fallbackDuration?: number): void {
     this.stop();
     this.audio = new Audio(objectUrl);
+    this.audio.crossOrigin = "anonymous";
+    
+    // Connect to effects chain
+    this.vocalEffectsService.connectElement(this.audio);
     
     if (fallbackDuration) {
       this.duration.set(fallbackDuration);
@@ -32,6 +39,7 @@ export class AudioPlayerService {
 
   play(): void {
     if (this.audio) {
+      this.vocalEffectsService.resumeContext();
       this.audio.play();
       this.isPlaying.set(true);
       this.startTimeUpdate();

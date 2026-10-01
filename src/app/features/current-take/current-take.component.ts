@@ -2,13 +2,14 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RecordingSessionService } from '../../core/services/recording-session.service';
 import { AudioPlayerService } from '../../core/services/audio-player.service';
+import { VocalEffectsComponent } from '../vocal-effects/vocal-effects.component';
 
 import { YoutubePlayerService } from '../../core/services/youtube-player.service';
 
 @Component({
   selector: 'app-current-take',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, VocalEffectsComponent],
   templateUrl: './current-take.component.html',
   styleUrls: ['./current-take.component.scss']
 })

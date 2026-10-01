@@ -1,6 +1,6 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { YouTubeSearchComponent } from '../../features/youtube-search/youtube-search.component';
 import { KaraokePlayerComponent } from '../../features/karaoke-player/karaoke-player.component';
 import { RecorderComponent } from '../../features/recorder/recorder.component';
@@ -32,7 +32,7 @@ import { ThemeToggleComponent } from '../../shared/components/theme-toggle/theme
   templateUrl: './studio.component.html',
   styleUrls: ['./studio.component.scss']
 })
-export class StudioComponent {
+export class StudioComponent implements OnInit {
   currentSong = signal<Song | null>(null);
   showGuard = signal<boolean>(false);
   isLibraryOpen = signal(false);
@@ -42,8 +42,20 @@ export class StudioComponent {
   recorderService = inject(AudioRecorderService);
   translateService = inject(TranslateService);
   router = inject(Router);
+  route = inject(ActivatedRoute);
   
   private pendingSong: Song | null = null;
+
+  ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      const tab = params['tab'];
+      if (tab === 'home') {
+        this.isLibraryOpen.set(false);
+      } else if (tab === 'youtube' || tab === 'local' || tab === 'favorites') {
+        this.openLibrary(tab as 'youtube' | 'local' | 'favorites');
+      }
+    });
+  }
 
   openLibrary(tab: 'youtube' | 'local' | 'favorites'): void {
     this.activeLibraryTab.set(tab);
@@ -59,7 +71,6 @@ export class StudioComponent {
   onExpandFavorites(): void {
     this.router.navigate(['/listen']);
   }
-
 
   onSongSelected(song: Song): void {
     // Check if there's an unsaved take

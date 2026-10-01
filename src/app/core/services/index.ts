@@ -5,3 +5,4 @@ export * from './audio-analyser.service';
 export * from './recording-session.service';
 export * from './audio-player.service';
 export * from './favorites.service';
+export * from './vocal-effects.service';

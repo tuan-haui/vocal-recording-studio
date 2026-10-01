@@ -1,0 +1,51 @@
+<div class="vocal-effects">
+  <div class="vocal-effects__header">
+    <h3><i class="fa-solid fa-sliders"></i> Vocal Effects (Post-processing)</h3>
+  </div>
+
+  <div class="preset-list">
+    <button *ngFor="let preset of presets" 
+            class="preset-btn" 
+            [class.is-active]="effectsService.currentPreset() === preset.id"
+            (click)="selectPreset(preset.id)">
+      <i class="fa-solid" [ngClass]="preset.icon"></i>
+      <span>{{ preset.label }}</span>
+    </button>
+  </div>
+
+  <div class="advanced-controls" *ngIf="effectsService.effectConfig() as config">
+    
+    <div class="control-row">
+      <div class="control-label">
+        <i class="fa-solid fa-water"></i> Reverb
+      </div>
+      <input type="range" class="range" min="0" max="100" [value]="config.reverb" (input)="updateConfig('reverb', $any($event.target).value)">
+      <div class="control-value">{{ config.reverb }}%</div>
+    </div>
+
+    <div class="control-row">
+      <div class="control-label">
+        <i class="fa-solid fa-podcast"></i> Echo
+      </div>
+      <input type="range" class="range" min="0" max="100" [value]="config.echo" (input)="updateConfig('echo', $any($event.target).value)">
+      <div class="control-value">{{ config.echo }}%</div>
+    </div>
+
+    <div class="control-row">
+      <div class="control-label">
+        <i class="fa-solid fa-wave-square"></i> Bass
+      </div>
+      <input type="range" class="range" min="-10" max="10" [value]="config.bass" (input)="updateConfig('bass', $any($event.target).value)">
+      <div class="control-value">{{ config.bass > 0 ? '+' : '' }}{{ config.bass }} dB</div>
+    </div>
+
+    <div class="control-row">
+      <div class="control-label">
+        <i class="fa-solid fa-bolt"></i> Treble
+      </div>
+      <input type="range" class="range" min="-10" max="10" [value]="config.treble" (input)="updateConfig('treble', $any($event.target).value)">
+      <div class="control-value">{{ config.treble > 0 ? '+' : '' }}{{ config.treble }} dB</div>
+    </div>
+
+  </div>
+</div>
