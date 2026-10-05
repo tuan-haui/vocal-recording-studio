@@ -17,7 +17,8 @@ if (process.env.YOUTUBE_API_KEY) {
 
   const envConfigFile = `export const environment = {
   production: ${isProduction},
-  youtubeApiKey: '${process.env.YOUTUBE_API_KEY}'
+  youtubeApiKey: '${process.env.YOUTUBE_API_KEY}',
+  API_BASE_URL: '${process.env.API_BASE_URL || 'https://default-backend-url.com/'}'
 };
 `;
 

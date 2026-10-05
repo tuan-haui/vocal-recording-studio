@@ -10,38 +10,54 @@ import { Song, YouTubeSearchResult } from '../models';
 })
 export class YoutubeService {
   private http = inject(HttpClient);
-  private apiUrl = 'https://www.googleapis.com/youtube/v3/search';
+  
+  // Xóa '/' ở cuối nếu có để ghép URL chính xác
+  private backendApiUrl = environment.API_BASE_URL.endsWith('/') 
+    ? environment.API_BASE_URL.slice(0, -1) 
+    : environment.API_BASE_URL;
 
   search(query: string, isKaraokeMode: boolean = false, pageToken?: string): Observable<YouTubeSearchResult> {
     const finalQuery = isKaraokeMode ? `${query} karaoke` : query;
-    let params = new HttpParams()
-      .set('part', 'snippet')
-      .set('type', 'video')
-      .set('maxResults', '12')
-      .set('q', finalQuery)
-      .set('key', environment.youtubeApiKey);
-
-    if (pageToken) {
-      params = params.set('pageToken', pageToken);
-    }
-
-    return this.http.get<any>(this.apiUrl, { params }).pipe(
+    let params = new HttpParams().set('q', finalQuery);
+    
+    // Gọi đến API Tìm kiếm Karaoke của BE
+    return this.http.get<any>(`${this.backendApiUrl}/api/v1/karaoke/search`, { params }).pipe(
       map(response => {
+        // Backend trả về: { query: string, items: KaraokeSearchItem[] }
         const items: Song[] = response.items.map((item: any) => ({
-          videoId: item.id.videoId,
-          title: item.snippet.title,
-          channelTitle: item.snippet.channelTitle,
-          thumbnailUrl: item.snippet.thumbnails?.high?.url || item.snippet.thumbnails?.default?.url
+          videoId: item.id,
+          title: item.title,
+          channelTitle: item.channel || '',
+          thumbnailUrl: item.thumbnail || '',
+          duration: item.duration,
+          source: 'youtube'
         }));
         
         return {
           items,
-          nextPageToken: response.nextPageToken,
-          totalResults: response.pageInfo?.totalResults
+          nextPageToken: undefined, 
+          totalResults: items.length
         };
       }),
       catchError(error => {
-        console.error('YouTube API error:', error);
+        console.error('Lỗi khi gọi BE Karaoke API:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  // API lấy trực tiếp audio stream url mà không cần Iframe
+  getStreamingUrl(videoId: string): Observable<{ audio_url: string, duration?: number }> {
+    const url = `https://www.youtube.com/watch?v=${videoId}`;
+    return this.http.post<any>(`${this.backendApiUrl}/api/v1/karaoke/resolve`, { url }).pipe(
+      map(response => {
+        return {
+          audio_url: response.audio_url,
+          duration: response.duration
+        };
+      }),
+      catchError(error => {
+        console.error('Lỗi khi lấy stream URL từ BE:', error);
         return throwError(() => error);
       })
     );

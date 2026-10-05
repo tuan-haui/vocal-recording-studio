@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, inject, OnDestroy, AfterViewIni
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Song } from '../../core/models';
-import { YoutubePlayerService, FavoritesService } from '../../core/services';
+import { YoutubePlayerService, FavoritesService, YoutubeService } from '../../core/services';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 @Component({
@@ -15,13 +15,25 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 export class KaraokePlayerComponent implements AfterViewInit, OnDestroy {
   @ViewChildren('localMediaElement') localMediaElements!: QueryList<ElementRef<HTMLMediaElement>>;
 
+  private youtubeService = inject(YoutubeService);
+
   @Input() set currentSong(song: Song | null) {
     this._currentSong = song;
     if (song) {
       if (song.source === 'local' && song.localUrl) {
         this.playerService.setLocalMedia(song.localUrl, song.mediaType || 'audio');
       } else if (song.videoId) {
-        this.loadSong(song.videoId);
+        // Thay vì mở YouTube iframe, ta lấy stream trực tiếp từ Backend
+        this.youtubeService.getStreamingUrl(song.videoId).subscribe({
+          next: (res) => {
+            // Phát luồng audio trực tiếp qua HTMLAudioElement
+            this.playerService.setLocalMedia(res.audio_url, 'audio');
+          },
+          error: (err) => {
+            console.error('Không lấy được stream từ BE, fallback về Iframe:', err);
+            this.loadSong(song.videoId); // Fallback về Iframe API cũ nếu cần
+          }
+        });
       }
       this.playerService.updateMediaSession(song.title, song.channelTitle, song.thumbnailUrl);
     }
